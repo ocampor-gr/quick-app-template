@@ -1,0 +1,9 @@
+services:
+  server:
+    image: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    entrypoint: [ "bun", "run", "index.ts" ]
