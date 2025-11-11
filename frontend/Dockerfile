@@ -29,4 +29,3 @@ COPY --from=prerelease /usr/app/package.json .
 
 # run the app
 USER bun
-EXPOSE 3000/tcp
