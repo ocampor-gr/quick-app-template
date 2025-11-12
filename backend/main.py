@@ -20,7 +20,7 @@ async def root():
 @app.get("/api/hello")
 async def get_hello():
 	return {
-		"message": "Hello, world!",
+		"message": "Hello, world!!!",
 		"method": "GET"
 	}
 
