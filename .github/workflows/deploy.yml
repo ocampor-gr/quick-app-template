@@ -1,19 +1,19 @@
 name: Deploy to Elastic Beanstalk (AWS CLI)
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Semgrep CE scan"]
+    types:
+      - completed
     branches:
       - master
   workflow_dispatch:
 
 jobs:
-  security:
-    uses: ./.github/workflows/security.yml
-
   deploy:
     runs-on: ubuntu-latest
     environment: prod
-    needs: security
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
     - name: Checkout code
