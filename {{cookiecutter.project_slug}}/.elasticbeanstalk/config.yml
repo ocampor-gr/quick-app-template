@@ -1,9 +1,9 @@
 branch-defaults:
   master:
-    environment: prod
+    environment: {{cookiecutter.environment}}
     group_suffix: null
 global:
-  application_name: docker-compose-tutorial
+  application_name: {{cookiecutter.package_name}}
   branch: null
   default_ec2_keyname: ricardo-2-kp
   default_platform: Docker running on 64bit Amazon Linux 2

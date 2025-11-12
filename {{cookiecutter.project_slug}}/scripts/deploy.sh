@@ -1,4 +1,4 @@
-ENV_NAME=prod
+ENV_NAME={{cookiecutter.environemnt}}
 APPS=$(eb list)
 
 if [ -z "${APPS}" ]; then

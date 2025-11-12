@@ -22,7 +22,7 @@ eb init
 ## Create environment
 
 ```
-eb create docker-compose-tutorial
+eb create {{cookiecutter.environment}}
 ```
 
 ## Test Application
@@ -33,7 +33,7 @@ eb open
 
 ## Update environment
 
-Tip: Make sure the change is commited or it will deploy the latest
+Tip: Make sure the change is committed, or it will deploy the latest
 committed version.
 
 ```
