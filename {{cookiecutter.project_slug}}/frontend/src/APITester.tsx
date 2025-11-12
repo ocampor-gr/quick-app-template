@@ -1,3 +1,4 @@
+{% raw %}
 import {useState} from "react";
 import { getHello, putHello, getHelloWithName} from "./service.ts";
 
@@ -96,3 +97,4 @@ export function APITester() {
       </div>
   );
 }
+{% endraw %}
