@@ -13,7 +13,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: {{cookiecutter.environment}}
+    {% raw %}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    {% endraw %}
 
     steps:
     - name: Checkout code
@@ -22,9 +24,12 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
+        {% raw %}
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
+        {% endraw %}
+
 
     - name: Install AWS CLI and EB CLI
       run: |
