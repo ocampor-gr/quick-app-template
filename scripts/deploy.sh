@@ -1,8 +1,8 @@
-APP_NAME=docker-compose-tutorial
+ENV_NAME=prod
 APPS=$(eb list)
 
 if [ -z "${APPS}" ]; then
-  eb create ${APP_NAME}
+  eb create ${ENV_NAME}
 else
   eb deploy
 fi
