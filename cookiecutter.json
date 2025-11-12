@@ -1,13 +1,8 @@
 {
-  "full_name": "Ricardo Ocampo",
-  "email": "ricardo.ocampo@graphitehq.com",
   "github_username": "ocampor-gh",
   "pypi_package_name": "quick-app-template",
-  "project_name": "Quick App Boilerplate",
   "environment": "prod",
   "project_slug": "{{ cookiecutter.pypi_package_name.replace('-', '_') }}",
   "project_short_description": "Python Boilerplate contains all the boilerplate you need to create an App.",
-  "pypi_username": "{{ cookiecutter.github_username }}",
-  "first_version": "0.1.0",
   "__gh_slug": "{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
 }
