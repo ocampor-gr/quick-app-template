@@ -1,0 +1,6 @@
+AWSConfigurationTemplateVersion: 1.1.0.0
+OptionSettings:
+  aws:autoscaling:launchconfiguration:
+    IamInstanceProfile: aws-elasticbeanstalk-ec2-role
+    EC2KeyName: aws
+    InstanceType: t3.micro
