@@ -1,4 +1,14 @@
 services:
+  nginx-proxy:
+    build:
+      context: proxy
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/log/nginx:/var/log/nginx"
+    depends_on:
+      - frontend
   frontend:
     image: frontend
     build:
