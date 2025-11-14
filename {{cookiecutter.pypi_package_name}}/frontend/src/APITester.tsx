@@ -2,99 +2,91 @@
 import {useState} from "react";
 import { getHello, putHello, getHelloWithName} from "./service.ts";
 
+const API_BASE_URL = "http://localhost:8000";
 
 export function APITester() {
-  const [result, setResult] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [name, setName] = useState<string>('');
+  const [response, setResponse] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
-
-  const handleGetHello = async () => {
+  const makeRequest = async (endpoint: string, method: string = "GET", requiresAuth: boolean = false) => {
     setLoading(true);
-    try {
-      const data = await getHello();
-      setResult(JSON.stringify(data, null, 2));
-    } catch (error) {
-      setResult(`Error :${error}`);
-    } finally {
-      setLoading(false);
-    }
-  }
+    setError(null);
 
-  const handlePutHello = async () => {
-    setLoading(true);
     try {
-      const data = await putHello();
-      setResult(JSON.stringify(data, null, 2));
-    } catch (error) {
-      setResult(`Error: ${error}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method,
+        credentials: 'include', // Include session cookies
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-  const handleGetHelloWithName = async () => {
-    if (!name.trim()) {
-      setResult('Please enter a name');
-      return;
-    }
+      if (response.status === 401 && requiresAuth) {
+        setError("Authentication required. Please login first.");
+        setResponse(null);
+        return;
+      }
 
-    setLoading(true);
-    try {
-      const data = await getHelloWithName(name);
-      setResult(JSON.stringify(data, null, 2));
-    } catch (error) {
-      setResult(`Error: ${error}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setResponse(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      setResponse(null);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-      <div style={{ padding: '20px' }}>
-        <h2>API Tester</h2>
+    <div className="api-tester">
+      <h2>API Tester</h2>
 
-        <div style={{ marginBottom: '10px' }}>
-          <button onClick={handleGetHello} disabled={loading}>
-            GET /api/hello
-          </button>
-        </div>
+      <div className="button-group">
+        <button
+          onClick={() => makeRequest("/api/hello")}
+          disabled={loading}
+        >
+          GET Hello (Public)
+        </button>
 
-        <div style={{ marginBottom: '10px' }}>
-          <button onClick={handlePutHello} disabled={loading}>
-            PUT /api/hello
-          </button>
-        </div>
+        <button
+          onClick={() => makeRequest("/api/hello", "PUT")}
+          disabled={loading}
+        >
+          PUT Hello (Public)
+        </button>
 
-        <div style={{ marginBottom: '10px' }}>
-          <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter name"
-              style={{ marginRight: '10px' }}
-          />
-          <button onClick={handleGetHelloWithName} disabled={loading}>
-            GET /api/hello/:name
-          </button>
-        </div>
-
-        <div style={{ marginTop: '20px' }}>
-          <h3>Result:</h3>
-          <pre style={{
-            backgroundColor: '#f5f5f5',
-            padding: '10px',
-            border: '1px solid #ccc',
-            whiteSpace: 'pre-wrap',
-            color: '#000',
-            textAlign: 'left',
-            fontFamily: 'monospace',
-            overflow: 'auto',
-          }}>
-  {loading ? 'Loading...' : result}
-</pre>
-        </div>
+        <button
+          onClick={() => makeRequest("/api/protected", "GET", true)}
+          disabled={loading}
+          className={user ? "protected-btn" : "protected-btn disabled"}
+          title={user ? "Click to access protected content" : "Login required"}
+        >
+          GET Protected {!user && "(Login Required)"}
+        </button>
       </div>
+
+      {loading && <div className="loading">Loading...</div>}
+
+      {error && (
+        <div className="error">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      {response && (
+        <div className={`response ${response.authenticated ? 'authenticated' : 'public'}`}>
+          <h3>Response:</h3>
+          <pre>{JSON.stringify(response, null, 2)}</pre>
+        </div>
+      )}
+    </div>
   );
 }
 {% endraw %}
