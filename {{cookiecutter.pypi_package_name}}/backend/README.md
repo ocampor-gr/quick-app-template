@@ -1,5 +1,6 @@
 ## Local Development
 
 ```
-uvicorn main:app --reload
+set -a && source .env && set +a
+uvicorn main:app --reload --port=8000
 ```
