@@ -35,5 +35,10 @@ jobs:
       run: |
         pip install awscli awsebcli --upgrade
 
-    - name: Deploy to Elastic Beanstalk
-      run: bash ./scripts/deploy.sh
+  - name: Deploy to Elastic Beanstalk
+    env:
+      {% raw %}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      {% endraw %}
+    run: bash ./scripts/deploy.sh
