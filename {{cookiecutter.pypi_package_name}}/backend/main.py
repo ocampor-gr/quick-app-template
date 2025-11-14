@@ -74,11 +74,6 @@ async def logout(request: Request):
 	return RedirectResponse(url='/')
 
 
-@app.get("/")
-async def root():
-	return {"message": "Hello World"}
-
-
 @app.get("/api/hello")
 async def get_hello():
 	return {
