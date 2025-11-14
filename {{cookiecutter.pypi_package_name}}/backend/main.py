@@ -74,6 +74,12 @@ async def logout(request: Request):
 	return RedirectResponse(url='/')
 
 
+@app.get("/api/user-status")
+async def get_user_status(request: Request):
+	user = request.session.get("user")
+	return {"authenticated": user is not None, "user": user}
+
+
 @app.get("/api/hello")
 async def get_hello():
 	return {
