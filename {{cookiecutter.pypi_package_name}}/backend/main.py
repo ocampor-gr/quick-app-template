@@ -43,13 +43,13 @@ app.add_middleware(
 )
 
 
-@app.get("/login")
+@app.get("/api/login")
 async def login(request: Request):
 	redirect_uri = request.url_for("auth")
 	return await oauth.google.authorize_redirect(request, redirect_uri=redirect_uri)
 
 
-@app.get("/auth")
+@app.get("/api/auth")
 async def auth(request: Request):
 	try:
 		token = await oauth.google.authorize_access_token(request)
@@ -68,7 +68,7 @@ async def auth(request: Request):
 	return RedirectResponse("/")
 
 
-@app.get('/logout')
+@app.get('/api/logout')
 async def logout(request: Request):
 	request.session.clear()
 	return RedirectResponse(url='/')
