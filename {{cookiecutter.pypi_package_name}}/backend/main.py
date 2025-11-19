@@ -43,13 +43,13 @@ app.add_middleware(
 )
 
 
-@app.get("/api/login")
+@app.get("/login")
 async def login(request: Request):
 	redirect_uri = request.url_for("auth")
 	return await oauth.google.authorize_redirect(request, redirect_uri=redirect_uri)
 
 
-@app.get("/api/auth")
+@app.get("/auth")
 async def auth(request: Request):
 	try:
 		token = await oauth.google.authorize_access_token(request)
@@ -68,19 +68,19 @@ async def auth(request: Request):
 	return RedirectResponse("/")
 
 
-@app.get('/api/logout')
+@app.get('/logout')
 async def logout(request: Request):
 	request.session.clear()
 	return RedirectResponse(url='/')
 
 
-@app.get("/api/user-status")
+@app.get("/user-status")
 async def get_user_status(request: Request):
 	user = request.session.get("user")
 	return {"authenticated": user is not None, "user": user}
 
 
-@app.get("/api/hello")
+@app.get("/hello")
 async def get_hello():
 	return {
 		"message": "Hello, world!!!",
@@ -88,7 +88,7 @@ async def get_hello():
 	}
 
 
-@app.put("/api/hello")
+@app.put("/hello")
 async def put_hello():
 	return {
 		"message": "Hello, world!",
@@ -96,7 +96,7 @@ async def put_hello():
 	}
 
 
-@app.get("/api/hello/{name}")
+@app.get("/hello/{name}")
 async def get_hello_name(name: str):
 	return {
 		"message": f"Hello, {name}!"

@@ -21,7 +21,7 @@ export default function App({ user }: { user: any }) {
   const [name, setName] = useState("");
 
   const getHello = async () => {
-    var url = 'http://localhost:8000/api/hello'
+    var url = 'http://localhost:8000/hello' // FIXME: Replace with prod URL
     if (name) {
       url = `${url}/${name}`
     }
@@ -33,7 +33,7 @@ export default function App({ user }: { user: any }) {
   }
 
   const putHello = async () => {
-    let data = await fetch('http://localhost:8000/api/hello', {
+    let data = await fetch('http://localhost:8000/hello', { // FIXME: Replace with prod URL
       method: 'PUT',
     });
     let response = await data.json();

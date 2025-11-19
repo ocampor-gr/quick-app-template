@@ -3,4 +3,4 @@ OptionSettings:
   aws:autoscaling:launchconfiguration:
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
     EC2KeyName: aws
-    InstanceType: t3.micro
+    InstanceType: t3.medium

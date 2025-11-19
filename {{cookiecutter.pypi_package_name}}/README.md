@@ -51,3 +51,20 @@ eb terminate
 ```
 openssl rand -base64 32
 ```
+
+## Generate Google Auth Credentials
+
+If you are getting the error:
+
+```
+Access blocked: This app’s request is invalid
+```
+
+Make sure you added the prod URL in authorized redirect URIs in Google Console. For example:
+
+```
+http://prod.eba-7it7jwzi.us-east-2.elasticbeanstalk.com/api/auth/callback/google
+```
+
+Also, if after the re-direct you get a not found. Make sure the proxy isn't overwriting the correct
+route. To fix this issue, the backend is redirected to /api/v1.
