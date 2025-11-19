@@ -45,3 +45,9 @@ eb deploy
 ```
 eb terminate
 ```
+
+## Generate AUTH_SECRET
+
+```
+openssl rand -base64 32
+```
