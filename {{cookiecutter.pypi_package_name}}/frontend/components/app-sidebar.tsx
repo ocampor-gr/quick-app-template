@@ -5,10 +5,6 @@ import {
   BookOpen,
   Bot,
   Frame,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
 } from "lucide-react"
 
 import { GraphiteLogo } from "@/components/ui/graphite-logo"
@@ -74,7 +70,7 @@ const data = {
   ],
 }
 
-export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sidebar> & { user: { name: string; email: string; image: string }}) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

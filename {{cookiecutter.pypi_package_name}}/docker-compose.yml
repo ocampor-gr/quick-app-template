@@ -16,7 +16,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    entrypoint: [ "bun", "run", "index.ts" ]
+    entrypoint: ["bun", "./server.js"]
   backend:
     image: backend
     build:
