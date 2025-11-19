@@ -1,4 +1,5 @@
-import {auth} from "@/auth";
+import {auth, signOut} from "@/auth";
+import {Button} from "@/components/ui/button";
 
 export default async function HelloPage() {
   const session = await auth();
@@ -16,6 +17,10 @@ export default async function HelloPage() {
       <p style={{ fontSize: '1rem' }}>
         Logged in as: {session?.user?.email}
       </p>
+      <Button onClick={async () => {
+        'use server';
+        await signOut();
+      }}>Logout</Button>
     </div>
   );
 }
