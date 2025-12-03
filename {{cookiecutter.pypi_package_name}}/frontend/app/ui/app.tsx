@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label"
 import {useState} from "react";
 
 export default function App({ user }: { user: any }) {
-  const apiUrl = process.env.BACKEND_URL
+  const apiUrl = process.env.BACKEND_URL;
   const [responseText, setResponseText] = useState("");
   const [name, setName] = useState("");
 
