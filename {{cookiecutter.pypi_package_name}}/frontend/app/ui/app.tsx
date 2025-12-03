@@ -17,11 +17,12 @@ import { Label } from "@/components/ui/label"
 import {useState} from "react";
 
 export default function App({ user }: { user: any }) {
+  const apiUrl = process.env.BACKEND_URL
   const [responseText, setResponseText] = useState("");
   const [name, setName] = useState("");
 
   const getHello = async () => {
-    var url = 'http://localhost:8000/hello' // FIXME: Replace with prod URL
+    var url = `${apiUrl}/hello`
     if (name) {
       url = `${url}/${name}`
     }
@@ -33,7 +34,7 @@ export default function App({ user }: { user: any }) {
   }
 
   const putHello = async () => {
-    let data = await fetch('http://localhost:8000/hello', { // FIXME: Replace with prod URL
+    let data = await fetch(`${apiUrl}/hello`, {
       method: 'PUT',
     });
     let response = await data.json();

@@ -17,7 +17,9 @@ create-env-list() {
 
 print-env-url() {
   local env_name=${1}
-  aws elasticbeanstalk describe-environments \
+  local cname=$(aws elasticbeanstalk describe-environments \
     --environment-names "${env_name}" \
-    --query '.Environments[0].CNAME' # TODO: Verify this query
+    --query '.Environments[0].CNAME')
+
+  echo "${cname:-"http://localhost:3000"}"
 }
