@@ -17,9 +17,9 @@ import { Label } from "@/components/ui/label"
 import {useState} from "react";
 
 export default function App({ user }: { user: any }) {
-  const apiUrl = process.env.BACKEND_URL;
   const [responseText, setResponseText] = useState("");
   const [name, setName] = useState("");
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const getHello = async () => {
     var url = `${apiUrl}/hello`
@@ -29,7 +29,6 @@ export default function App({ user }: { user: any }) {
 
     let data = await fetch(url);
     let response = await data.json();
-    console.log(url.toString());
     setResponseText(JSON.stringify(response, null, 2));
   }
 

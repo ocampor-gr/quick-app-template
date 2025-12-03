@@ -19,6 +19,7 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - AUTH_URL=${AUTH_URL}
       - AUTH_SECRET=${AUTH_SECRET}
+      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
     ports:
       - "3000:3000"
     entrypoint: ["bun", "./server.js"]
