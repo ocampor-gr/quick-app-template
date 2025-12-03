@@ -14,6 +14,18 @@ pip install cruft
 cruft create https://github.com/ocampor-gr/quick-app-template
 ```
 
+3. [Optional] Install Elastic Beanstalk CLI
+
+```
+pip install awscli awsebcli --upgrade
+```
+
+4. [Optional] Add the environment URL to Google Ath  authorized URLs in Google Console. 
+If you don't know how to do it ask #engineering for help.
+
+5. [Optional] Make sure that GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables
+are configured in Github Secrets. If you don't know how to do it ask #engineering for help.
+
 ## Update Project from Template
 
 ```

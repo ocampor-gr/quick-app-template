@@ -40,7 +40,5 @@ jobs:
       {% raw %}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      AUTH_URL: http://localhost:3000
-      AUTH_SECRET: hello
       {% endraw %}
     run: bash ./scripts/deploy.sh

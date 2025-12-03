@@ -1,4 +1,4 @@
-create_env_list() {
+create-env-list() {
     local vars=("$@")
     local env_list=""
 
@@ -13,4 +13,11 @@ create_env_list() {
     done
 
     echo "${env_list}"
+}
+
+print-env-url() {
+  local env_name=${1}
+  aws elasticbeanstalk describe-environments \
+    --environment-names "${env_name}" \
+    --query '.Environments[0].CNAME' # TODO: Verify this query
 }
