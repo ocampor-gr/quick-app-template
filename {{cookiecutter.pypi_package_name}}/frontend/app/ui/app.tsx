@@ -19,7 +19,7 @@ import {useState} from "react";
 export default function App({ user }: { user: any }) {
   const [responseText, setResponseText] = useState("");
   const [name, setName] = useState("");
-  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // FIXME: This does not work in prod
 
   const getHello = async () => {
     var url = `${apiUrl}/hello`
