@@ -8,7 +8,6 @@ on:
     branches:
       - master
   workflow_dispatch:
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,11 +15,9 @@ jobs:
     {% raw %}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     {% endraw %}
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -29,16 +26,14 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
         {% endraw %}
-
-
     - name: Install AWS CLI and EB CLI
       run: |
         pip install awscli awsebcli --upgrade
 
-  - name: Deploy to Elastic Beanstalk
-    env:
-      {% raw %}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      {% endraw %}
-    run: bash ./scripts/deploy.sh
+    - name: Deploy to Elastic Beanstalk
+      env:
+        {% raw %}
+        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        {% endraw %}
+      run: bash ./scripts/deploy.sh
