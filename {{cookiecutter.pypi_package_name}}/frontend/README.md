@@ -2,7 +2,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, make sure that you have Node.js version ">=20.9.0" available and install dependencies:
+
+```bash
+bun install
+```
+
+Second, run the development server:
 
 ```bash
 bun dev

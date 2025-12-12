@@ -18,3 +18,9 @@ uv sync
 set -a && source .env && set +a
 uv run uvicorn main:app --reload --port=8000
 ```
+
+4. Test
+
+```bash
+curl http://localhost:8000/hello
+```
