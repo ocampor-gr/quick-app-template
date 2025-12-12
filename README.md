@@ -14,6 +14,10 @@ pip install cruft
 cruft create https://github.com/ocampor-gr/quick-app-template
 ```
 
+3. Create a `.env` file in the root repository using `.env.example` as example if you
+want to run `docker-compose.yml` locally. For local development, copy the `.env` to 
+the root of `frontend` and `backend` folders.
+
 3. [Optional] Install Elastic Beanstalk CLI
 
 ```
