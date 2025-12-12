@@ -9,12 +9,12 @@ pip install uv
 2. Install libraries.
 
 ```bash
-uv install
+uv sync
 ```
 
 3. Start local server.
 
 ```bash
 set -a && source .env && set +a
-uvicorn main:app --reload --port=8000
+uv run uvicorn main:app --reload --port=8000
 ```

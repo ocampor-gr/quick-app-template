@@ -36,7 +36,7 @@ oauth.register(
 
 app.add_middleware(
 	CORSMiddleware,
-	allow_origins=["http://localhost:3000", os.environ["FRONTEND_URL"]],
+	allow_origins=["http://localhost:3000", os.environ["AUTH_URL"]],
 	allow_credentials=True,
 	allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 	allow_headers=["Content-Type", "Authorization", "Accept"],
