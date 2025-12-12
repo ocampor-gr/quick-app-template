@@ -29,6 +29,7 @@ services:
       context: backend
       dockerfile: Dockerfile
     environment:
+      - AUTH_URL=${AUTH_URL}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     ports:

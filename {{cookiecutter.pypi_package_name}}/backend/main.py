@@ -36,10 +36,10 @@ oauth.register(
 
 app.add_middleware(
 	CORSMiddleware,
-	allow_origins=["*"],  # TODO: Fix for prod
+	allow_origins=["http://localhost:3000", os.environ["FRONTEND_URL"]],
 	allow_credentials=True,
-	allow_methods=["*"],
-	allow_headers=["*"],
+	allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	allow_headers=["Content-Type", "Authorization", "Accept"],
 )
 
 
