@@ -21,5 +21,5 @@ FROM python:3.12-slim
 WORKDIR /app
 
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
-COPY main.py /app/main.py
+COPY *.py /app
 ENV PATH="/app/.venv/bin:$PATH"
