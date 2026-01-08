@@ -1,9 +1,9 @@
 branch-defaults:
-  master:
-    environment: {{cookiecutter.pypi_package_name}}
+  {{cookiecutter.github_branch}}:
+    environment: {{cookiecutter.eb_environment}}
     group_suffix: null
 global:
-  application_name: {{cookiecutter.pypi_package_name}}
+  application_name: {{cookiecutter.eb_app_name}}
   branch: null
   default_ec2_keyname: ricardo-2-kp
   default_platform: Docker running on 64bit Amazon Linux 2

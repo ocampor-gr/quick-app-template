@@ -1,0 +1,14 @@
+name: Security Scan (Reusable)
+
+on:
+  workflow_call:
+
+jobs:
+  security-scan:
+    name: Run Security Scan
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep scan --error --config auto

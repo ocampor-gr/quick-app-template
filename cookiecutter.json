@@ -1,8 +1,10 @@
 {
   "github_username": "ocampor-gh",
+  "github_branch": "master",
   "pypi_package_name": "quick-app",
-  "environment": "prod",
   "project_slug": "{{ cookiecutter.pypi_package_name.replace('-', '_') }}",
+  "eb_app_name": "{{ cookiecutter.project_slug }}",
+  "eb_environment": "{{ cookiecutter.github_branch.replace('-', '_') }}",
   "project_short_description": "Python Boilerplate contains all the boilerplate you need to create an App.",
   "__gh_slug": "{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
 }

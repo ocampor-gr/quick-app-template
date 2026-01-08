@@ -1,20 +1,18 @@
 name: Deploy to Elastic Beanstalk (AWS CLI)
 
 on:
-  workflow_run:
-    workflows: ["Semgrep CE scan"]
-    types:
-      - completed
+  push:
     branches:
-      - master
+      - {{cookiecutter.github_branch}}
   workflow_dispatch:
+
 jobs:
+  security-scan:
+    name: Run Security Scan
+    uses: ./.github/workflows/security-scan.yml
   deploy:
     runs-on: ubuntu-latest
-    environment: {{cookiecutter.environment}}
-    {% raw %}
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    {% endraw %}
+    needs: security-scan
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
