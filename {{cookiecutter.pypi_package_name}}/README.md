@@ -1,5 +1,34 @@
 source: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/docker-compose-quickstart.html
 
+# Start Database
+To run the local database, you need to have docker installed. For the instructions 
+click [here](https://www.docker.com/get-started/).
+
+1. Create or Update the `.env` with the DB fields.
+2. Start the database.
+```
+docker compose up db
+```
+3. Test the connection
+For this you need to have the postgres client installed. For mac you can run:
+
+```
+brew install libpq
+```
+
+Then, you can test your database by running:
+```
+psql -h 0.0.0.0:5432 -U postgres
+```
+
+Hint_1: Make sure to input the same password that you defined in the variable 
+`DB_PASS` in the `.env` file.
+
+Hint_2: If you change the password, you have to delete the docker's DB volume. One way
+to do it is running `docker volume prune`.
+
+# Deploy Manually
+
 ## Install
 
 ```
