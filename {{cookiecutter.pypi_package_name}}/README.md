@@ -22,7 +22,7 @@ eb init
 ## Create environment
 
 ```
-eb create {{cookiecutter.environment}}
+eb create {{cookiecutter.eb_environment}}
 ```
 
 ## Test Application

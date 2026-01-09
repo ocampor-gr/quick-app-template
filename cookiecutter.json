@@ -2,6 +2,7 @@
   "github_username": "ocampor-gh",
   "github_branch": "master",
   "pypi_package_name": "quick-app",
+  "include_database": "no",
   "project_slug": "{{ cookiecutter.pypi_package_name.replace('-', '_') }}",
   "eb_app_name": "{{ cookiecutter.project_slug }}",
   "eb_environment": "{{ cookiecutter.github_branch.replace('-', '_') }}",

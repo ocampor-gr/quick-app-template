@@ -23,7 +23,7 @@ services:
       - AUTH_SECRET=${AUTH_SECRET}
     ports:
       - "3000:3000"
-    entrypoint: ["bun", "./server.js"]
+    entrypoint: [ "bun", "./server.js" ]
   backend:
     image: backend
     build:
@@ -33,6 +33,24 @@ services:
       - AUTH_URL=${AUTH_URL}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    {% if cookiecutter.include_database %}
+      - DB_PASS=${DB_PASS}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+    {% endif %}
     ports:
       - "8000:8000"
     entrypoint: [ "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000" ]
+  {% if cookiecutter.include_database %}
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - /var/lib/postgresql
+  {% endif %}

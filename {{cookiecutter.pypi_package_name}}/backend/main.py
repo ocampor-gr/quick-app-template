@@ -10,6 +10,12 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 
+{% if cookiecutter.include_database %}
+from sqlalchemy import select, text
+from sqlalchemy.exc import SQLAlchemyError
+from database import SessionDep
+{% endif %}
+
 app = FastAPI()
 
 app.add_middleware(
@@ -101,3 +107,15 @@ async def get_hello_name(name: str):
 	return {
 		"message": f"Hello, {name}!"
 	}
+
+
+{% if cookiecutter.include_database %}
+@app.get("/ping-db")
+async def ping_database(session: SessionDep):
+	try:
+		session.exec(select(text("1")))
+		return {"status": "ok", "message": "Database connection successful"}
+	except SQLAlchemyError as e:
+		logging.error(f"Database connection failed: {str(e)}")
+		return {"status": "error", "message": "Database connection failed"}
+{% endif %}

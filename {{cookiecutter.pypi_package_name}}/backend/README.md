@@ -24,3 +24,11 @@ uv run uvicorn main:app --reload --port=8000
 ```bash
 curl http://localhost:8000/hello
 ```
+
+{% if cookiecutter.include_database %}
+5. Test DB
+
+```bash
+curl http://localhost:8000/ping-db
+```
+{% endif %}
