@@ -3,12 +3,11 @@ create-env-list() {
     local env_list=""
 
     for var in "${vars[@]}"; do
-        if [[ -n "${!var}" ]]; then
-            if [[ -z "$env_list" ]]; then
-                env_list="$var=${!var}"
-            else
-                env_list="$env_list,$var=${!var}"
-            fi
+        local value=$(printenv "$var")
+        if [[ -z "$env_list" ]]; then
+            env_list="$var=$value"
+        else
+            env_list="$env_list,$var=$value"
         fi
     done
 
