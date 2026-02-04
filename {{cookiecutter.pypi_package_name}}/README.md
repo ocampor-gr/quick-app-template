@@ -89,7 +89,7 @@ If you are getting the error:
 Access blocked: This app’s request is invalid
 ```
 
-Make sure you added the prod URL in authorized redirect URIs in Google Console. For example:
+Make sure you added the prod URL in authorized redirect URIs in [Google Console](https://console.cloud.google.com/apis/credentials?referrer=search&project=graphite-data). For example:
 
 ```
 http://prod.eba-7it7jwzi.us-east-2.elasticbeanstalk.com/api/auth/callback/google
