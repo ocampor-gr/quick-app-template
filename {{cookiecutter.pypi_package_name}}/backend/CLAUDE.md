@@ -1,34 +1,74 @@
+# Backend Development Guide
 
-# Backend Context
+## Build & Test Commands
 
-When working with this backend codebase, prioritize readability over cleverness. Ask clarifying questions before making architectural changes.
+### Using uv (recommended)
 
-Do not modify any of the following files:
-    - Any hidden folder or file. The hidden folders are the ones prefixed with a dot, for example 
-        `.elasticbeanstalk`, `.github`, `.platform`.
-    - Any infrastructure file like `docker-compose.yml`, `cookiecutter.json`, the files in the folder `scripts`, `Dockerfile` files,
-        or the files in the folder `proxy`.
+- Install dependencies: `uv sync`
+- Update lock file: `uv lock`
 
-## About This Backend
+### Testing and linting
 
-FastAPI REST API for user authentication and profiles. Uses SQLAlchemy for database operations and Pydantic for validation.
+- Run single test: `uv run --env-file=.env pytest -n auto --timeout=30 --no-cov tests/path/to/test_file.py::test_function_name -v`
+- Run linter: `uv run ruff check --fix`
+- Test typing: `uv run --env-file=.env mypy .`
+- **Note**: Only run tests the functions that are affected by changes. Run them in a single command to leverage parallelization.
+- **Note**: Run linter and test typing as a validation step.
 
-## Key Files & Structure
+## Technical Stack
 
-- `main.py` - FastAPI application entry point
-- `pyproject.toml` - Python project dependencies and configuration
-- `Dockerfile` - Container configuration
-- `app/` - Main application package (if exists)
-- `tests/` - Test suite (if exists)
+- **Python version**: Python 3.13+
+- **Project config**: `pyproject.toml` for configuration and dependency management
+- **Environment**: Use virtual environment in `.venv` for dependency isolation
+- **Package management**: Use `uv` for faster, more reliable dependency management with lock file
+- **Dependencies**: Separate production and dev dependencies in `pyproject.toml`
+- **Linting**: `ruff` for style and error checking
+- **Type checking**: Use mypy
 
-## Standards
+## Code Style Guidelines
 
-- Type hints required on all functions
-- PEP 8 with 100 character lines
-- Use SQLAlchemy for database operations
-- Use Pydantic for data validation
+- **Formatting**: Black-compatible formatting via `ruff format`
+- **Imports**: Sort imports with `ruff` (stdlib, third-party, local)
+- **Type hints**: Use native Python type hints (e.g., `list[str]` not `List[str]`)
+- **Documentation**: Google-style docstrings for all modules, classes, functions
+- **Naming**: snake_case for variables/functions, PascalCase for classes
+- **Function length**: Keep functions short (< 30 lines) and single-purpose
+- **PEP 8**: Follow PEP 8 style guide (enforced via `ruff`)
 
-## Workflow
-- Be sure to typecheck when you're done making a series of code changes
-- Prefer running single tests, and not the whole test suite, for performance
-- Use `uv` for dependency management
+## Python Best Practices
+
+- **Debugging**: Use `logging` module instead of `print`
+- **Error handling**: Use specific exceptions with context messages and proper logging
+- **Data structures**: Use list/dict comprehensions for concise, readable code
+- **Function arguments**: Avoid mutable default arguments
+- **Data containers**: Leverage `dataclasses` to reduce boilerplate
+- **Configuration**: Use environment variables (via `python-dotenv`) for configuration
+- **Security**: Never store/log AWS credentials, set command timeouts
+
+## Development Patterns & Best Practices
+
+- **Favor simplicity**: Choose the simplest solution that meets requirements
+- **DRY principle**: Avoid code duplication; reuse existing functionality
+- **Configuration management**: Use environment variables for different environments
+- **Focused changes**: Only implement explicitly requested or fully understood changes
+- **Preserve patterns**: Follow existing code patterns when fixing bugs
+- **File size**: Keep files under 300 lines; refactor when exceeding this limit
+- **Test coverage**: Write comprehensive unit and integration tests with `pytest`; include fixtures. Create new tests everytime new functionality is added.
+- **Test structure**: Use table-driven tests with parameterization for similar test cases
+- **Mocking**: Use unittest.mock for external dependencies; don't test implementation details
+- **Modular design**: Create reusable, modular components
+- **Logging**: Implement appropriate logging levels (debug, info, error)
+- **Error handling**: Implement robust error handling for production reliability
+- **Security best practices**: Follow input validation and data protection practices
+- **Performance**: Optimize critical code sections when necessary
+- **Dependency management**: Add libraries only when essential
+  - When adding/updating dependencies, update `pyproject.toml` first
+  - Regenerate the lock file
+  - Install the new dependencies with `uv sync`
+
+## Development Workflow
+
+- **Impact assessment**: Evaluate how changes affect other codebase areas
+- **Documentation**: Keep documentation up-to-date for complex logic and features
+- **Dependencies**: When adding dependencies, always update the `uv.lock` file
+- **CI/CD**: All changes should pass CI checks (tests, linting, etc.) before merging

@@ -1,19 +1,13 @@
-import logging
 import os
 import secrets
 
-from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi import FastAPI
-from starlette.config import Config
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.requests import Request
-from starlette.responses import HTMLResponse, RedirectResponse
 
-{% if cookiecutter.include_database %}
-from sqlalchemy import select, text
-from sqlalchemy.exc import SQLAlchemyError
-from database import SessionDep
+from app.routes import auth, hello
+{% if cookiecutter.include_database == "yes" %}
+from app.routes import health
 {% endif %}
 
 app = FastAPI()
@@ -25,97 +19,16 @@ app.add_middleware(
 	https_only=False,  # TODO: This should be set to true in prod
 )
 
-config = Config(environ=dict(
-	GOOGLE_CLIENT_ID=os.environ["GOOGLE_CLIENT_ID"],
-	GOOGLE_CLIENT_SECRET=os.environ["GOOGLE_CLIENT_SECRET"],
-))
-
-oauth = OAuth(config=config)
-
-oauth.register(
-	name="google",
-	server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-	client_kwargs={
-		"scope": "openid email profile"
-	}
-)
-
 app.add_middleware(
 	CORSMiddleware,
-	allow_origins=["http://localhost:3000", os.environ["AUTH_URL"]],
+	allow_origins=["http://localhost:3000", os.environ.get("AUTH_URL", "")],
 	allow_credentials=True,
 	allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 	allow_headers=["Content-Type", "Authorization", "Accept"],
 )
 
-
-@app.get("/login")
-async def login(request: Request):
-	redirect_uri = request.url_for("auth")
-	return await oauth.google.authorize_redirect(request, redirect_uri=redirect_uri)
-
-
-@app.get("/auth")
-async def auth(request: Request):
-	try:
-		token = await oauth.google.authorize_access_token(request)
-		logging.info("OAuth token obtained successfully")
-	except OAuthError as e:
-		logging.error(f"OAuth error: {e.error} - {e.description}")
-		return HTMLResponse(f"""
-			<h1>OAuth Error: {e.error}</h1>
-			<p>{e.description}</p>
-		""")
-	
-	user = token.get("userinfo")
-	
-	if user:
-		request.session["user"] = dict(user)
-	return RedirectResponse("/")
-
-
-@app.get('/logout')
-async def logout(request: Request):
-	request.session.clear()
-	return RedirectResponse(url='/')
-
-
-@app.get("/user-status")
-async def get_user_status(request: Request):
-	user = request.session.get("user")
-	return {"authenticated": user is not None, "user": user}
-
-
-@app.get("/hello")
-async def get_hello():
-	return {
-		"message": "Hello, world!!!",
-		"method": "GET"
-	}
-
-
-@app.put("/hello")
-async def put_hello():
-	return {
-		"message": "Hello, world!",
-		"method": "PUT"
-	}
-
-
-@app.get("/hello/{name}")
-async def get_hello_name(name: str):
-	return {
-		"message": f"Hello, {name}!"
-	}
-
-
-{% if cookiecutter.include_database %}
-@app.get("/ping-db")
-async def ping_database(session: SessionDep):
-	try:
-		session.exec(select(text("1")))
-		return {"status": "ok", "message": "Database connection successful"}
-	except SQLAlchemyError as e:
-		logging.error(f"Database connection failed: {str(e)}")
-		return {"status": "error", "message": "Database connection failed"}
+app.include_router(auth.router)
+app.include_router(hello.router)
+{% if cookiecutter.include_database == "yes" %}
+app.include_router(health.router)
 {% endif %}

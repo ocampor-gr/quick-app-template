@@ -7,8 +7,34 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[all]==0.121.1",
     "Authlib==1.6.5",
-    {% if cookiecutter.include_database %}
+    {% if cookiecutter.include_database == "yes" %}
     "psycopg2-binary==2.9.9",
     "sqlmodel==0.0.31",
     {% endif %}
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-xdist>=3.5",
+    "pytest-timeout>=2.2",
+    "httpx>=0.27",
+    "ruff>=0.9",
+    "mypy>=1.13",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["authlib.*", "sqlmodel.*"]
+ignore_missing_imports = true

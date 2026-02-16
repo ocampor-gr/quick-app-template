@@ -4,11 +4,11 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session, create_engine
 
-user = os.environ['DB_USER']
-password = os.environ['DB_PASS']
-port = os.environ['DB_PORT']
-dbname = os.environ['DB_NAME']
-host = os.environ['DB_HOST']
+user = os.environ.get("DB_USER", "")
+password = os.environ.get("DB_PASS", "")
+port = os.environ.get("DB_PORT", "")
+dbname = os.environ.get("DB_NAME", "")
+host = os.environ.get("DB_HOST", "")
 
 engine = create_engine(
 	f"postgresql://{user}:{password}@{host}:{port}/{dbname}",
