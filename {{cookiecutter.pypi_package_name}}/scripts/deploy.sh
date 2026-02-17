@@ -8,7 +8,8 @@ GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-"client-secret-is-missing"}
 AUTH_SECRET=$(openssl rand -base64 32)
 AUTH_URL="http://2026-goals.eba-sjtckyan.us-east-2.elasticbeanstalk.com"
 NEXT_PUBLIC_BACKEND_URL="http://2026-goals.eba-sjtckyan.us-east-2.elasticbeanstalk.com/api/v1"
-ENV_VARS=$(create-env-list "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "AUTH_SECRET" "AUTH_URL" "NEXT_PUBLIC_BACKEND_URL")
+ALLOWED_DOMAIN=${ALLOWED_DOMAIN:-"graphitehq.com"}
+ENV_VARS=$(create-env-list "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "AUTH_SECRET" "AUTH_URL" "NEXT_PUBLIC_BACKEND_URL" "ALLOWED_DOMAIN")
 
 if [ -z "${APPS}" ]; then
   # staging VPC

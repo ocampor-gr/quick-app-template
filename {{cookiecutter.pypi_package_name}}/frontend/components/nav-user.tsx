@@ -4,8 +4,6 @@ import {
   ChevronsUpDown,
   LogOut,
 } from "lucide-react"
-import {signOut} from "next-auth/react"
-
 import {
   Avatar,
   AvatarFallback,
@@ -76,7 +74,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem onClick={() => { window.location.href = "/api/v1/auth/logout"; }}>
             <LogOut/>
               Log out
             </DropdownMenuItem>

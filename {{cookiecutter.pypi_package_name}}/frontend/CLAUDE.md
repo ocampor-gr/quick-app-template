@@ -18,7 +18,8 @@ Next.js React application with TypeScript for user authentication and profiles. 
 - `components/` - Reusable React components
 - `lib/` - Utility functions and configurations
 - `public/` - Static assets
-- `auth.ts` & `auth.config.ts` - Authentication configuration
+- `lib/auth.ts` - Auth utility (`getUser()` for server components)
+- `proxy.ts` - Route protection middleware (cookie-based redirects)
 - `package.json` - Node.js dependencies and scripts
 
 ## Standards
@@ -46,7 +47,10 @@ Next.js React application with TypeScript for user authentication and profiles. 
 ## Development Guidelines
 
 ### Authentication
-- Authentication is handled via `auth.ts` configuration
+- Authentication is owned by the backend via `/api/v1/auth/*` endpoints (Google OAuth login, callback, logout)
+- Sessions use HTTP-only `session_token` cookies containing JWTs
+- `proxy.ts` middleware protects `/app` routes by checking for the session cookie
+- Use `getUser()` from `lib/auth.ts` in server components to fetch the current user
 
 ### Styling
 - Follow consistent CSS/styling patterns
@@ -56,5 +60,5 @@ Next.js React application with TypeScript for user authentication and profiles. 
 
 - This is a Next.js application using the App Router
 - Uses Bun as the package manager and runtime
-- Authentication system is configured
+- Authentication is delegated to the backend (no NextAuth)
 - TypeScript is required throughout the codebase

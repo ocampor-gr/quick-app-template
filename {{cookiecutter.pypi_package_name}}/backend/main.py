@@ -1,5 +1,4 @@
 import os
-import secrets
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
@@ -14,7 +13,7 @@ app = FastAPI()
 
 app.add_middleware(
 	SessionMiddleware,
-	secret_key=secrets.token_urlsafe(32),
+	secret_key=os.environ.get("AUTH_SECRET", "change-me-in-production"),
 	same_site="lax",
 	https_only=False,  # TODO: This should be set to true in prod
 )

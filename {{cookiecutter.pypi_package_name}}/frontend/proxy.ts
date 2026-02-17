@@ -1,7 +1,24 @@
-import {auth} from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
 
-export default auth;
+const COOKIE_NAME = "session_token";
+
+export default function proxy(request: NextRequest) {
+  const hasCookie = request.cookies.has(COOKIE_NAME);
+  const { pathname } = request.nextUrl;
+
+  // Protected routes: redirect to login if no cookie
+  if (pathname.startsWith("/app") && !hasCookie) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // Redirect authenticated users away from login/landing
+  if ((pathname === "/login" || pathname === "/") && hasCookie) {
+    return NextResponse.redirect(new URL("/app", request.url));
+  }
+
+  return NextResponse.next();
+}
+
 export const config = {
-  // https://nextjs.org/docs/app/api-reference/file-conventions/proxy#matcher
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };
