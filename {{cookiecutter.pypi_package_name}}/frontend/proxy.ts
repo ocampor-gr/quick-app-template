@@ -11,8 +11,13 @@ export default function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Redirect authenticated users away from login/landing
-  if ((pathname === "/login" || pathname === "/") && hasCookie) {
+  // Landing page: redirect to /app (authenticated) or /login (unauthenticated)
+  if (pathname === "/") {
+    return NextResponse.redirect(new URL(hasCookie ? "/app" : "/login", request.url));
+  }
+
+  // Redirect authenticated users away from login
+  if (pathname === "/login" && hasCookie) {
     return NextResponse.redirect(new URL("/app", request.url));
   }
 

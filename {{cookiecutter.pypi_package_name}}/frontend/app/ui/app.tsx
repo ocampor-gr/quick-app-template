@@ -3,41 +3,45 @@
 import {AppSidebar} from "@/components/app-sidebar";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import {Separator} from "@/components/ui/separator";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList, BreadcrumbPage,
-  BreadcrumbSeparator
-} from "@/components/ui/breadcrumb";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {useState} from "react";
 
-export default function App({ user }: { user: any }) {
+export default function App({ user }: { user: { name: string; email: string; image: string } }) {
   const [responseText, setResponseText] = useState("");
   const [name, setName] = useState("");
-  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // FIXME: This does not work in prod
+  const [loading, setLoading] = useState(false);
+  const apiUrl = "/api/v1";
 
   const getHello = async () => {
-    var url = `${apiUrl}/hello`
-    if (name) {
-      url = `${url}/${name}`
+    setLoading(true);
+    try {
+      const url = name ? `${apiUrl}/hello/${name}` : `${apiUrl}/hello`;
+      const response = await fetch(url);
+      const data = await response.json();
+      setResponseText(JSON.stringify(data, null, 2));
+    } catch (error) {
+      setResponseText(`Error: ${error instanceof Error ? error.message : "Request failed"}`);
+    } finally {
+      setLoading(false);
     }
-
-    let data = await fetch(url);
-    let response = await data.json();
-    setResponseText(JSON.stringify(response, null, 2));
   }
 
   const putHello = async () => {
-    let data = await fetch(`${apiUrl}/hello`, {
-      method: 'PUT',
-    });
-    let response = await data.json();
-    setResponseText(JSON.stringify(response, null, 2));
+    setLoading(true);
+    try {
+      const response = await fetch(`${apiUrl}/hello`, {
+        method: 'PUT',
+      });
+      const data = await response.json();
+      setResponseText(JSON.stringify(data, null, 2));
+    } catch (error) {
+      setResponseText(`Error: ${error instanceof Error ? error.message : "Request failed"}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -51,19 +55,7 @@ export default function App({ user }: { user: any }) {
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    First App
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>LLM</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <h1 className="text-base font-medium">Dashboard</h1>
           </div>
         </header>
         <div className="flex flex-1 items-center justify-center p-4">
@@ -81,7 +73,7 @@ export default function App({ user }: { user: any }) {
                     <Label htmlFor="name">Name</Label>
                     <Input
                       id="name"
-                      type="name"
+                      type="text"
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
@@ -92,15 +84,15 @@ export default function App({ user }: { user: any }) {
               <div className="grid gap-2">
                 <Label>Result</Label>
                 <div className="min-h-[40px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm">
-                  {responseText || "No result yet..."}
+                  {loading ? "Loading..." : responseText || "No result yet..."}
                 </div>
               </div>
             </CardContent>
             <CardFooter className="flex-col gap-2">
-              <Button variant="outline" className="w-full" onClick={getHello}>
+              <Button variant="outline" className="w-full" onClick={getHello} disabled={loading}>
                 GET: /api/hello
               </Button>
-              <Button variant="outline" className="w-full" onClick={putHello}>
+              <Button variant="outline" className="w-full" onClick={putHello} disabled={loading}>
                 PUT: /api/hello
               </Button>
             </CardFooter>

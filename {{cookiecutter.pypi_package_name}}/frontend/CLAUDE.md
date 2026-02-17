@@ -52,9 +52,32 @@ Next.js React application with TypeScript for user authentication and profiles. 
 - `proxy.ts` middleware protects `/app` routes by checking for the session cookie
 - Use `getUser()` from `lib/auth.ts` in server components to fetch the current user
 
+### UI Components
+
+This project uses **Radix UI** primitives for all interactive UI components. Each Radix primitive is wrapped with project-specific styling in `components/ui/`.
+
+**Rules:**
+- **Never build custom interactive UI components from scratch.** Always check if a Radix UI primitive exists first at https://www.radix-ui.com/primitives/docs/overview/getting-started. If one exists, install it with `bun add @radix-ui/react-<component>` and create a styled wrapper in `components/ui/`.
+- **Never install alternative UI libraries** (e.g., MUI, Chakra, Ant Design, Headless UI, React Aria, shadcn/ui). Radix UI is the only UI primitive library for this project.
+- **Use existing `components/ui/` wrappers** when a wrapper already exists. For example, use `import { Avatar } from "@/components/ui/avatar"` instead of importing `@radix-ui/react-avatar` directly in page or feature components.
+- **When adding a new Radix component**, follow the existing pattern: create a wrapper in `components/ui/` that applies Tailwind styles, uses `data-slot` attributes, and re-exports the composed component.
+- **Extend existing components with variants** using `class-variance-authority` (CVA) rather than creating new component files for minor style differences.
+- **Icons must come from `lucide-react`**. Do not add other icon packages.
+
+**Currently installed Radix UI packages:**
+`react-avatar`, `react-dialog`, `react-dropdown-menu`, `react-label`, `react-separator`, `react-slot`, `react-tooltip`
+
+**Adding a new Radix UI component:**
+```bash
+bun add @radix-ui/react-<component-name>
+```
+Then create a styled wrapper in `components/ui/<component-name>.tsx` following the patterns in existing wrappers.
+
 ### Styling
-- Follow consistent CSS/styling patterns
-- Use component-scoped styles when appropriate
+- Tailwind CSS with CSS variables for theming (defined in `app/globals.css`)
+- Use the `cn()` utility from `@/lib/utils` for conditional class merging
+- Follow the existing pattern of `data-slot` attributes on components
+- Do not use CSS-in-JS libraries (styled-components, Emotion, etc.)
 
 ## Notes
 

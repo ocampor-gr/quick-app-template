@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { useSearchParams } from "next/navigation";
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -32,11 +33,11 @@ export default function LoginForm() {
         </div>
       )}
       <CardFooter className="flex-col gap-2">
-        <a href="/api/v1/auth/login" className="w-full">
-          <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full cursor-pointer">
+        <Button variant="outline" className="w-full" asChild>
+          <a href="/api/v1/auth/login">
             Login with Google
-          </button>
-        </a>
+          </a>
+        </Button>
       </CardFooter>
     </Card>
   )
