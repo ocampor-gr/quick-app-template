@@ -19,6 +19,14 @@ set -a && source .env && set +a
 uv run uvicorn main:app --reload --port=8000
 ```
 
+To skip Google OAuth during local development, start with `DEV_AUTH=true`:
+
+```bash
+DEV_AUTH=true uv run uvicorn main:app --reload --port=8000
+```
+
+This auto-sets a session cookie on the first request so you are logged in as "Dev User" without needing Google credentials.
+
 4. Test
 
 ```bash
