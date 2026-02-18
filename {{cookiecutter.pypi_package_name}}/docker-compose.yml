@@ -14,10 +14,9 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
     environment:
       - AUTH_URL=${AUTH_URL}
+      - BACKEND_URL=${BACKEND_URL:-http://backend:8000}
     ports:
       - "3000:3000"
     entrypoint: [ "bun", "./server.js" ]
@@ -32,6 +31,7 @@ services:
       - ALLOWED_DOMAIN=${ALLOWED_DOMAIN}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - DEV_AUTH=${DEV_AUTH:-false}
     {% if cookiecutter.include_database %}
       - DB_PASS=${DB_PASS}
       - DB_USER=${DB_USER}

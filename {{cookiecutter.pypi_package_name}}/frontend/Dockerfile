@@ -24,10 +24,6 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
-# NEXT_PUBLIC_BACKEND_URL variable needs to be available at build time.
-ARG NEXT_PUBLIC_BACKEND_URL
-ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
-
 RUN bun run build
 
 # Production image, copy all the files and run next

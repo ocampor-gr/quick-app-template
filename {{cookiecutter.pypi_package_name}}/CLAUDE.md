@@ -1,27 +1,28 @@
 # Project Context
 
-When working with this codebase, prioritize readability over cleverness. Ask clarifying questions before making architectural changes.
+## Do not modify
 
-Do not modify any of the following files:
-    - Any hidden folder or file. The hidden folders are the ones prefixed with a dot, for example 
-        `.elasticbeanstalk`, `.github`, `.platform`.
-    - Any infrastructure file like `docker-compose.yml`, `cookiecutter.json`, the files in the folder `scripts`,
-        or the files in the folder `proxy`.
+Hidden folders (`.elasticbeanstalk`, `.github`, `.platform`), `docker-compose.yml`, `scripts/`, `proxy/`.
 
-## About This Project
+## Architecture
 
-FastAPI REST API for user authentication and profiles. Uses SQLAlchemy for database operations and Pydantic for validation.
+- `frontend/` - Next.js 16 (Bun)
+- `backend/` - FastAPI (Python 3.13+, uv)
+- `proxy/` - Nginx: `/api/v1/*` -> backend, everything else -> frontend
 
-## Key Directories
+## Running locally
 
-- `frontend/` - Next.js React application.
-- `backend/` - FastAPI REST API.
+Create `.env`:
+```
+AUTH_URL=http://localhost
+AUTH_SECRET=dev-secret-key
+ALLOWED_DOMAIN=example.com
+DEV_AUTH=true
+BACKEND_URL=http://backend:8000
+```
 
-## Standards
+```bash
+docker compose build && docker compose up -d
+```
 
-- Type hints required on all functions
-- PEP 8 with 100 character lines
-
-# Workflow
-- Be sure to typecheck when you’re done making a series of code changes
-- Prefer running single tests, and not the whole test suite, for performance
+Open http://localhost. `DEV_AUTH=true` bypasses Google OAuth with a fake user.

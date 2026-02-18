@@ -1,3 +1,5 @@
+import { BACKEND_URL } from "./config";
+
 export interface User {
   name: string;
   email: string;
@@ -6,7 +8,7 @@ export interface User {
 
 export async function getUser(cookieHeader: string): Promise<User | null> {
   try {
-    const response = await fetch("http://backend:8000/auth/me", {
+    const response = await fetch(`${BACKEND_URL}/auth/me`, {
       headers: { cookie: cookieHeader },
     });
     if (!response.ok) {
