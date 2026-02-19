@@ -1,3 +1,4 @@
+{% raw %}
 ---
 name: test-e2e
 description: Run end-to-end tests using Playwright MCP browser tools. Use when asked to test the app, run E2E tests, or verify the UI.
@@ -121,3 +122,4 @@ If any test **failed**, keep the screenshots and logs so the user can inspect th
 - Check `browser_console_messages` if something looks broken
 - If a page doesn't load, check `browser_network_requests` for failed requests
 - The DEV_AUTH bypass only works when the backend has `DEV_AUTH=true` in its environment
+{% endraw %}
