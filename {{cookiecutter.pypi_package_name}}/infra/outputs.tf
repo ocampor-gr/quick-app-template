@@ -14,15 +14,6 @@ output "eb_environment_cname" {
   value       = aws_elastic_beanstalk_environment._.cname
 }
 
-output "eb_environment_url" {
-  description = "Elastic Beanstalk environment URL"
-  value       = "http://${aws_elastic_beanstalk_environment._.cname}"
-}
-
-output "s3_app_versions_bucket" {
-  description = "S3 bucket for application versions"
-  value       = aws_s3_bucket._.id
-}
 {% endraw %}
 {% if cookiecutter.include_database == "yes" %}
 

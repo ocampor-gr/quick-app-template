@@ -1,27 +1,4 @@
 {% raw %}
-resource "aws_s3_bucket" "_" {
-  bucket = "${var.project_name}-app-versions"
-
-  tags = {
-    Name = "${var.project_name}-app-versions"
-  }
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "_" {
-  bucket = aws_s3_bucket._.id
-
-  rule {
-    id     = "expire-old-versions"
-    status = "Enabled"
-
-    filter {}
-
-    expiration {
-      days = 30
-    }
-  }
-}
-
 resource "aws_elastic_beanstalk_application" "_" {
   name        = var.eb_app_name
   description = "${var.project_name} application"

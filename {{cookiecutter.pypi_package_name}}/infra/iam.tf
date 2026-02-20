@@ -21,16 +21,6 @@ resource "aws_iam_role_policy_attachment" "eb_web_tier" {
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
 }
 
-resource "aws_iam_role_policy_attachment" "eb_multicontainer_docker" {
-  role       = aws_iam_role.eb_ec2.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
-}
-
-resource "aws_iam_role_policy_attachment" "eb_worker_tier" {
-  role       = aws_iam_role.eb_ec2.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
-}
-
 resource "aws_iam_role_policy_attachment" "eb_ecr" {
   role       = aws_iam_role.eb_ec2.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
