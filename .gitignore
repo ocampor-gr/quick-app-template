@@ -2,3 +2,6 @@
 .env
 **/.env
 *app_versions
+.terraform/
+*.tfstate
+*.tfstate.backup
