@@ -6,14 +6,10 @@ APPS=$(eb list)
 GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-"client-id-is-missing"}
 GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-"client-secret-is-missing"}
 AUTH_SECRET=$(openssl rand -base64 32)
-AUTH_URL="http://2026-goals.eba-sjtckyan.us-east-2.elasticbeanstalk.com"
-NEXT_PUBLIC_BACKEND_URL="http://2026-goals.eba-sjtckyan.us-east-2.elasticbeanstalk.com/api/v1"
 ALLOWED_DOMAIN=${ALLOWED_DOMAIN:-"graphitehq.com"}
-ENV_VARS=$(create-env-list "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "AUTH_SECRET" "AUTH_URL" "NEXT_PUBLIC_BACKEND_URL" "ALLOWED_DOMAIN")
+ENV_VARS=$(create-env-list "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "AUTH_SECRET" "ALLOWED_DOMAIN")
 
 if [ -z "${APPS}" ]; then
-  # staging VPC
-  # staging load balance sg
   eb create ${ENV_NAME} \
       -i t3.large \
       --vpc.id vpc-0865d0fe1685e07c6 \
@@ -22,6 +18,9 @@ if [ -z "${APPS}" ]; then
       --vpc.securitygroups sg-01b0628a487f58d2b \
       --vpc.elbpublic \
       --envvars "${ENV_VARS}"
+
+  CNAME=$(print-env-url "${ENV_NAME}")
+  eb setenv AUTH_URL="http://${CNAME}"
 else
   eb deploy
 fi

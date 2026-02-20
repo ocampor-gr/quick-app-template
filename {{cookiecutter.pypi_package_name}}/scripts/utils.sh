@@ -18,7 +18,8 @@ print-env-url() {
   local env_name=${1}
   local cname=$(aws elasticbeanstalk describe-environments \
     --environment-names "${env_name}" \
-    --query '.Environments[0].CNAME')
+    --query 'Environments[0].CNAME' \
+    --output text)
 
-  echo "${cname:-"http://localhost:3000"}"
+  echo "${cname:-localhost}"
 }

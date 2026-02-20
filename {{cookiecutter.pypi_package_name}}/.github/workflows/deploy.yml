@@ -10,9 +10,12 @@ jobs:
   security-scan:
     name: Run Security Scan
     uses: ./.github/workflows/security-scan.yml
+  backend-ci:
+    name: Run Backend CI
+    uses: ./.github/workflows/backend-ci.yml
   deploy:
     runs-on: ubuntu-latest
-    needs: security-scan
+    needs: [security-scan, backend-ci]
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -34,4 +37,5 @@ jobs:
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         {% endraw %}
+        ALLOWED_DOMAIN: graphitehq.com
       run: bash ./scripts/deploy.sh
