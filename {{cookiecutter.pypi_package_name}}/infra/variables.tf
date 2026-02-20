@@ -16,7 +16,7 @@ variable "vpc_id" {
 }
 
 variable "app_subnet_ids" {
-  description = "Existing subnet IDs (multi-AZ) for app instances and DB subnet group"
+  description = "Existing subnet IDs (multi-AZ) for app instances"
   type        = list(string)
 }
 
@@ -26,7 +26,7 @@ variable "elb_subnet_ids" {
 }
 
 variable "security_group_id" {
-  description = "Existing security group ID for instances and RDS"
+  description = "Existing security group ID for EB instances"
   type        = string
 }
 
@@ -51,7 +51,7 @@ variable "eb_environment_name" {
 variable "solution_stack_name" {
   description = "EB solution stack"
   type        = string
-  default     = "64bit Amazon Linux 2 running Docker"
+  default     = "64bit Amazon Linux 2023 running Docker"
 }
 
 variable "google_client_id" {

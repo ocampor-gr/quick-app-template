@@ -151,8 +151,8 @@ resource "aws_elastic_beanstalk_environment" "_" {
   }
 }
 
-resource "null_resource" "_" {
-  triggers = {
+resource "terraform_data" "_" {
+  triggers_replace = {
     environment_cname = aws_elastic_beanstalk_environment._.cname
   }
 
