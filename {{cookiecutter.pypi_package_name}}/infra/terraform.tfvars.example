@@ -1,0 +1,17 @@
+vpc_id            = "vpc-xxxxxxxxxxxxxxxxx"
+app_subnet_ids    = ["subnet-xxxxxxxxxxxxxxxxx", "subnet-xxxxxxxxxxxxxxxxx"]
+elb_subnet_ids    = ["subnet-xxxxxxxxxxxxxxxxx", "subnet-xxxxxxxxxxxxxxxxx"]
+security_group_id = "sg-xxxxxxxxxxxxxxxxx"
+
+google_client_id     = "your-google-client-id"
+google_client_secret = "your-google-client-secret"
+auth_secret          = "your-auth-secret"
+
+# instance_type       = "t3.large"
+# allowed_domain      = "graphitehq.com"
+# solution_stack_name = "64bit Amazon Linux 2 running Docker"
+{% if cookiecutter.include_database == "yes" %}
+
+db_password = "your-db-password"
+# db_name   = "{{ cookiecutter.project_slug }}"
+{% endif %}

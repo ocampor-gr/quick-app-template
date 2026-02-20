@@ -9,24 +9,75 @@ variable "region" {
   type        = string
   default     = "us-east-2"
 }
-{% if cookiecutter.include_database == "yes" %}
+
 variable "vpc_id" {
   description = "Existing VPC ID"
   type        = string
-  default     = "vpc-0865d0fe1685e07c6"
 }
 
-variable "subnet_ids" {
-  description = "Existing subnet IDs (multi-AZ) for the DB subnet group"
+variable "app_subnet_ids" {
+  description = "Existing subnet IDs (multi-AZ) for app instances and DB subnet group"
   type        = list(string)
-  default     = ["subnet-0f51fe4df99eafc89", "subnet-09ed0579b716d86e3"]
+}
+
+variable "elb_subnet_ids" {
+  description = "Existing subnet IDs (multi-AZ) for the load balancer"
+  type        = list(string)
 }
 
 variable "security_group_id" {
-  description = "Existing security group ID for the RDS instance"
+  description = "Existing security group ID for instances and RDS"
   type        = string
-  default     = "sg-01b0628a487f58d2b"
 }
+
+variable "instance_type" {
+  description = "EC2 instance type for EB environment"
+  type        = string
+  default     = "t3.large"
+}
+
+variable "eb_app_name" {
+  description = "Elastic Beanstalk application name"
+  type        = string
+  default     = "{{ cookiecutter.eb_app_name }}"
+}
+
+variable "eb_environment_name" {
+  description = "Elastic Beanstalk environment name"
+  type        = string
+  default     = "{{ cookiecutter.eb_environment }}"
+}
+
+variable "solution_stack_name" {
+  description = "EB solution stack"
+  type        = string
+  default     = "64bit Amazon Linux 2 running Docker"
+}
+
+variable "google_client_id" {
+  description = "Google OAuth client ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "google_client_secret" {
+  description = "Google OAuth client secret"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth_secret" {
+  description = "Secret key for authentication"
+  type        = string
+  sensitive   = true
+}
+
+variable "allowed_domain" {
+  description = "Allowed email domain for OAuth"
+  type        = string
+  default     = "graphitehq.com"
+}
+{% if cookiecutter.include_database == "yes" %}
 
 variable "db_password" {
   description = "Master password for the RDS instance"
