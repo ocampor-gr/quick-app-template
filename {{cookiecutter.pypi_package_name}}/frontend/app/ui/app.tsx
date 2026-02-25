@@ -43,7 +43,20 @@ export default function App({ user }: { user: { name: string; email: string; ima
       setLoading(false);
     }
   }
-
+{% if cookiecutter.include_database == "yes" %}
+  const pingDb = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${apiUrl}/ping-db`);
+      const data = await response.json();
+      setResponseText(JSON.stringify(data, null, 2));
+    } catch (error) {
+      setResponseText(`Error: ${error instanceof Error ? error.message : "Request failed"}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+{% endif %}
   return (
     <SidebarProvider>
       <AppSidebar user={user}/>
@@ -95,6 +108,11 @@ export default function App({ user }: { user: { name: string; email: string; ima
               <Button variant="outline" className="w-full" onClick={putHello} disabled={loading}>
                 PUT: /api/hello
               </Button>
+{%- if cookiecutter.include_database == "yes" %}
+              <Button variant="outline" className="w-full" onClick={pingDb} disabled={loading}>
+                GET: /api/ping-db
+              </Button>
+{%- endif %}
             </CardFooter>
           </Card>
         </div>
