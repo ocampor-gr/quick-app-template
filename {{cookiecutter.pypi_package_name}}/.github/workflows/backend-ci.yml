@@ -34,6 +34,15 @@ jobs:
       AUTH_URL: http://localhost:3000
       AUTH_SECRET: test-secret-key-for-jwt
       ALLOWED_DOMAIN: graphitehq.com
+{% endraw %}
+{%- if cookiecutter.include_database == "yes" %}
+      DB_USER: test
+      DB_PASS: test
+      DB_PORT: "5432"
+      DB_NAME: test
+      DB_HOST: localhost
+{%- endif %}
+{% raw %}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
@@ -52,6 +61,15 @@ jobs:
       AUTH_URL: http://localhost:3000
       AUTH_SECRET: test-secret-key-for-jwt
       ALLOWED_DOMAIN: graphitehq.com
+{% endraw %}
+{%- if cookiecutter.include_database == "yes" %}
+      DB_USER: test
+      DB_PASS: test
+      DB_PORT: "5432"
+      DB_NAME: test
+      DB_HOST: localhost
+{%- endif %}
+{% raw %}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4

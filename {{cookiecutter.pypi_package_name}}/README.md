@@ -8,16 +8,16 @@
 Requires [Docker](https://www.docker.com/get-started/).
 
 1. Create or update `.env` with the DB fields.
-2. Start the database:
+2. Start the database and run migrations:
    ```bash
-   docker compose up db
+   docker compose up db -d
+   cd backend && uv run alembic upgrade head
    ```
-3. Test the connection (requires `psql`):
-   ```bash
-   psql -h 0.0.0.0 -p 5432 -U postgres
-   ```
+3. Verify: `curl http://localhost:8000/ping-db`
 
 > **Tip:** If you change the password, delete the Docker DB volume with `docker volume prune`.
+
+See `backend/README.md` for migration workflow (create, rollback, autogenerate).
 {% endif %}
 
 ## Deployment

@@ -50,3 +50,5 @@ bun run lint
 ## Rules
 
 1. When executing bash commands, you must not use 2>&1 redirection. All commands should be run without this specific redirection
+
+2. **Worktree workflow**: Always create a new git worktree before entering plan mode. After implementation, merge the worktree branch back into the original branch with `git -C /path/to/main-repo merge <worktree-branch>`.

@@ -22,4 +22,8 @@ WORKDIR /app
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY *.py /app/
 COPY app/ /app/app/
+{% if cookiecutter.include_database == "yes" -%}
+COPY alembic.ini /app/
+COPY alembic/ /app/alembic/
+{% endif -%}
 ENV PATH="/app/.venv/bin:$PATH"

@@ -8,6 +8,9 @@ from starlette.responses import RedirectResponse
 
 from app.auth import COOKIE_NAME, create_token
 from app.routes import auth, health, hello
+{%- if cookiecutter.include_database == "yes" %}
+from app import models  # noqa: F401
+{%- endif %}
 
 app = FastAPI()
 

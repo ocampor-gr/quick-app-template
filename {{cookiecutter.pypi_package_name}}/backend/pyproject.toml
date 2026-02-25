@@ -11,6 +11,7 @@ dependencies = [
     {% if cookiecutter.include_database == "yes" %}
     "psycopg2-binary==2.9.9",
     "sqlmodel==0.0.31",
+    "alembic==1.15.1",
     {% endif %}
 ]
 
@@ -37,5 +38,5 @@ warn_return_any = true
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
-module = ["authlib.*", "sqlmodel.*"]
+module = ["authlib.*", "sqlmodel.*", "alembic.*"]
 ignore_missing_imports = true

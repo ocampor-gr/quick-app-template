@@ -34,11 +34,22 @@ curl http://localhost:8000/hello
 ```
 
 {% if cookiecutter.include_database == "yes" %}
-5. Test DB
+## Database Migrations
+
+Migrations are managed with [Alembic](https://alembic.sqlalchemy.org/) and live in `alembic/versions/`.
 
 ```bash
-curl http://localhost:8000/ping-db
+# Apply pending migrations
+uv run alembic upgrade head
+
+# Auto-generate after changing app/models.py
+uv run alembic revision --autogenerate -m "describe your change"
+
+# Rollback last migration
+uv run alembic downgrade -1
 ```
+
+In production, migrations run via a `.platform/hooks/predeploy` hook before the app starts.
 {% endif %}
 
 ## Testing & Code Quality

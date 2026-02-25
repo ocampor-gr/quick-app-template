@@ -3,6 +3,10 @@ import shutil
 
 REMOVE_PATHS = [
 	'{% if cookiecutter.include_database != "yes" %}backend/app/database.py{% endif %}',
+	'{% if cookiecutter.include_database != "yes" %}backend/app/models.py{% endif %}',
+	'{% if cookiecutter.include_database != "yes" %}backend/alembic.ini{% endif %}',
+	'{% if cookiecutter.include_database != "yes" %}backend/alembic{% endif %}',
+	'{% if cookiecutter.include_database != "yes" %}.platform/hooks/predeploy/01_run_migrations.sh{% endif %}',
 ]
 
 for path in REMOVE_PATHS:
