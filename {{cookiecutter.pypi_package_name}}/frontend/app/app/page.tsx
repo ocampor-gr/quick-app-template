@@ -9,7 +9,8 @@ export default async function Page() {
   const user = await getUser(cookieHeader);
 
   if (!user) {
-    redirect("/login");
+    // Clear potentially corrupt cookie via backend logout before redirecting to login
+    redirect("/api/v1/auth/logout");
   }
 
   return <App user={user} />;

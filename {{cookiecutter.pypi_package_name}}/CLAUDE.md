@@ -6,9 +6,11 @@ Hidden folders (`.elasticbeanstalk`, `.github`, `.platform`), `docker-compose.ym
 
 ## Architecture
 
-- `frontend/` - Next.js 16 (Bun)
-- `backend/` - FastAPI (Python 3.13+, uv)
+`frontend/CLAUDE.md` for frontend-specific guidelines
+- `backend/` - FastAPI (Python 3.13+, uv) — see `backend/CLAUDE.md` for backend-specific guidelines
 - `proxy/` - Nginx: `/api/v1/*` -> backend, everything else -> frontend
+
+**Important**: Before working on code in `frontend/` or `backend/`, always read and follow the corresponding `CLAUDE.md` in that directory.
 
 ## Running locally
 
@@ -26,3 +28,7 @@ docker compose build && docker compose up -d
 ```
 
 Open http://localhost. `DEV_AUTH=true` bypasses Google OAuth with a fake user.
+
+## Rules
+
+1. When executing bash commands, you must not use 2>&1 redirection. All commands should be run without this specific redirection

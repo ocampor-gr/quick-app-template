@@ -9,9 +9,9 @@
 
 ### Testing and linting
 
-- Run single test: `uv run --env-file=.env pytest -n auto --timeout=30 --no-cov tests/path/to/test_file.py::test_function_name -v`
-- Run linter: `uv run ruff check --fix`
-- Test typing: `uv run --env-file=.env mypy .`
+- Run single test: `uv run pytest -n auto tests/path/to/test_file.py::test_function_name -v`
+- Run linter: `uv run ruff check --fix` and `uv run ruff format --check`
+- Test typing: `uv run mypy .`
 - **Note**: Only run tests the functions that are affected by changes. Run them in a single command to leverage parallelization.
 - **Note**: Run linter and test typing as a validation step.
 
@@ -55,6 +55,8 @@
 - **File size**: Keep files under 300 lines; refactor when exceeding this limit
 - **Test coverage**: Write comprehensive unit and integration tests with `pytest`; include fixtures. Create new tests everytime new functionality is added.
 - **Test structure**: Use table-driven tests with parameterization for similar test cases
+- **Test data**: Express all reusable test data as `@pytest.fixture` functions — never as module-level constants or helper functions prefixed with `_`.
+- **Public over private**: Only mark helpers private (`_`) if they are internal implementation details. If a helper can be tested or reused independently, make it public.
 - **Mocking**: Use unittest.mock for external dependencies; don't test implementation details
 - **Modular design**: Create reusable, modular components
 - **Logging**: Implement appropriate logging levels (debug, info, error)

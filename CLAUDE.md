@@ -27,3 +27,26 @@ cookiecutter . --output-dir /tmp/out-db --no-input include_database=yes  # with 
 ```
 
 If `cookiecutter` is not on PATH: `/home/ocampor/.local/share/pipx/venvs/cruft/bin/cookiecutter`
+
+After rendering, run tests and lint from the output directory:
+
+```bash
+cd /tmp/out/quick-app
+
+# Backend
+cd backend
+uv sync
+uv run ruff check --fix
+uv run ruff format --check
+uv run mypy .
+uv run pytest -n auto --timeout=30 -v
+
+# Frontend
+cd ../frontend
+bun install
+bun run lint
+```
+
+## Rules
+
+1. When executing bash commands, you must not use 2>&1 redirection. All commands should be run without this specific redirection

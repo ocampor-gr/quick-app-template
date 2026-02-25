@@ -3,7 +3,6 @@ import shutil
 
 REMOVE_PATHS = [
 	'{% if cookiecutter.include_database != "yes" %}backend/app/database.py{% endif %}',
-	'{% if cookiecutter.include_database != "yes" %}backend/app/routes/health.py{% endif %}',
 ]
 
 for path in REMOVE_PATHS:

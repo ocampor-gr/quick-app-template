@@ -1,4 +1,4 @@
-name: Deploy to Elastic Beanstalk (AWS CLI)
+name: Deploy to Elastic Beanstalk (Terraform)
 
 on:
   push:
@@ -27,15 +27,25 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
         {% endraw %}
-    - name: Install AWS CLI and EB CLI
-      run: |
-        pip install awscli awsebcli --upgrade
-
-    - name: Deploy to Elastic Beanstalk
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.10"
+    - name: Deploy via Terraform
       env:
         {% raw %}
-        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-        GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
+        TF_STATE_REGION: ${{ secrets.TF_STATE_REGION }}
+        TF_VAR_vpc_id: ${{ secrets.VPC_ID }}
+        TF_VAR_app_subnet_ids: ${{ secrets.APP_SUBNET_IDS }}
+        TF_VAR_elb_subnet_ids: ${{ secrets.ELB_SUBNET_IDS }}
+        TF_VAR_security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
+        TF_VAR_google_client_id: ${{ secrets.GOOGLE_CLIENT_ID }}
+        TF_VAR_google_client_secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         {% endraw %}
-        ALLOWED_DOMAIN: graphitehq.com
+{% if cookiecutter.include_database == "yes" %}
+        {% raw %}
+        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        {% endraw %}
+{% endif %}
       run: bash ./scripts/deploy.sh

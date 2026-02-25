@@ -1,99 +1,111 @@
-source: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/docker-compose-quickstart.html
+# {{ cookiecutter.pypi_package_name }}
 
-# Start Database
-To run the local database, you need to have docker installed. For the instructions 
-click [here](https://www.docker.com/get-started/).
+{{ cookiecutter.project_short_description }}
 
-1. Create or Update the `.env` with the DB fields.
-2. Start the database.
-```
-docker compose up db
-```
-3. Test the connection
-For this you need to have the postgres client installed. For mac you can run:
+{% if cookiecutter.include_database == "yes" %}
+## Local Database
 
-```
-brew install libpq
-```
+Requires [Docker](https://www.docker.com/get-started/).
 
-Then, you can test your database by running:
-```
-psql -h 0.0.0.0:5432 -U postgres
-```
+1. Create or update `.env` with the DB fields.
+2. Start the database:
+   ```bash
+   docker compose up db
+   ```
+3. Test the connection (requires `psql`):
+   ```bash
+   psql -h 0.0.0.0 -p 5432 -U postgres
+   ```
 
-Hint_1: Make sure to input the same password that you defined in the variable 
-`DB_PASS` in the `.env` file.
+> **Tip:** If you change the password, delete the Docker DB volume with `docker volume prune`.
+{% endif %}
 
-Hint_2: If you change the password, you have to delete the docker's DB volume. One way
-to do it is running `docker volume prune`.
+## Deployment
 
-# Deploy Manually
+Infrastructure is managed with [Terraform](https://developer.hashicorp.com/terraform/install) (>= 1.10).
 
-## Install
+### Prerequisites
 
-```
-pip install awsebcli --upgrade
-```
+1. Install [Terraform](https://developer.hashicorp.com/terraform/install) (>= 1.10) and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+2. Create a shared S3 bucket for Terraform state:
+   ```bash
+   aws s3api create-bucket \
+     --bucket <your-terraform-state-bucket> \
+     --region us-east-2 \
+     --create-bucket-configuration LocationConstraint=us-east-2
+   ```
+3. Copy `infra/terraform.tfvars.example` to `infra/terraform.tfvars` and fill in your values.
+4. Export the required environment variables:
+   ```bash
+   export TF_STATE_BUCKET=<your-terraform-state-bucket>
+   export TF_STATE_REGION=us-east-2
+   ```
 
-## Create an EB application
+### Provision Infrastructure
 
-1. Create EB configuration
-```
-eb init -p docker docker-compose-tutorial --region us-east-2
-```
-
-2. Create EC2 SSH key
-
-```
-eb init
-```
-
-## Create environment
-
-```
-eb create {{cookiecutter.eb_environment}}
-```
-
-## Test Application
-
-```
-eb open
+```bash
+cd infra
+terraform init -input=false \
+  -backend-config="bucket=$TF_STATE_BUCKET" \
+  -backend-config="region=$TF_STATE_REGION"
+terraform plan -out=tfplan
+# Review the plan, then apply:
+terraform apply tfplan
 ```
 
-## Update environment
+### Deploy Application
 
-Tip: Make sure the change is committed, or it will deploy the latest
-committed version.
-
-```
-eb deploy
+```bash
+bash scripts/deploy.sh
 ```
 
-## Clean Up
+This packages the app, uploads it to S3, and runs `terraform apply` to deploy.
 
+### Cleanup
+
+```bash
+cd infra
+terraform destroy
 ```
-eb terminate
-```
+
+### GitHub Actions Secrets
+
+The CI/CD pipeline (`.github/workflows/deploy.yml`) requires these secrets:
+
+| Secret | Description |
+|--------|-------------|
+| `AWS_ACCESS_KEY_ID` | AWS access key |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret key |
+| `AWS_REGION` | AWS region (e.g. `us-east-2`) |
+| `TF_STATE_BUCKET` | S3 bucket for Terraform state |
+| `TF_STATE_REGION` | Region of the state bucket |
+| `VPC_ID` | VPC ID for the EB environment |
+| `APP_SUBNET_IDS` | JSON list of app subnet IDs (e.g. `["subnet-xxx","subnet-yyy"]`) |
+| `ELB_SUBNET_IDS` | JSON list of ELB subnet IDs (e.g. `["subnet-xxx","subnet-yyy"]`) |
+| `SECURITY_GROUP_ID` | Security group ID for EB instances |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
+| `AUTH_SECRET` | Auth secret key (`openssl rand -base64 32`) |
+{%- if cookiecutter.include_database == "yes" %}
+| `DB_PASSWORD` | RDS master password |
+{%- endif %}
 
 ## Generate AUTH_SECRET
 
-```
+```bash
 openssl rand -base64 32
 ```
 
-## Generate Google Auth Credentials
+## Google Auth Credentials
 
-If you are getting the error:
-
-```
-Access blocked: This app’s request is invalid
-```
-
-Make sure you added the prod URL in authorized redirect URIs in [Google Console](https://console.cloud.google.com/apis/credentials?referrer=search&project=graphite-data). For example:
+Add the production URL to authorized redirect URIs in [Google Console](https://console.cloud.google.com/apis/credentials):
 
 ```
-http://prod.eba-7it7jwzi.us-east-2.elasticbeanstalk.com/api/auth/callback/google
+http://<your-eb-cname>/api/auth/callback/google
 ```
 
-Also, if after the re-direct you get a not found. Make sure the proxy isn't overwriting the correct
-route. To fix this issue, the backend is redirected to /api/v1.
+You can find your EB CNAME with:
+
+```bash
+cd infra && terraform output eb_environment_cname
+```
