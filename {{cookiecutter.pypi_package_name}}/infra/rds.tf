@@ -48,11 +48,22 @@ resource "aws_db_instance" "_" {
   db_subnet_group_name   = aws_db_subnet_group._.name
   vpc_security_group_ids = [aws_security_group._.id]
 
-  skip_final_snapshot = true
+  deletion_protection = true
+
+  skip_final_snapshot       = false
+  final_snapshot_identifier = "${var.project_name}-db-final-snapshot"
+  copy_tags_to_snapshot     = true
+
   publicly_accessible = false
 
   tags = {
-    Name = "${var.project_name}-db"
+    Name      = "${var.project_name}-db"
+    ManagedBy = "quick-app-template"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = [password]
   }
 }
 {% endraw %}
