@@ -1,11 +1,12 @@
 {
   "github_username": "ocampor-gh",
   "github_branch": "master",
-  "pypi_package_name": "quick-app",
+  "app_name": "Quick App",
   "include_database": "no",
+  "pypi_package_name": "{{ cookiecutter.app_name.lower().replace(' ', '-').replace('_', '-') }}",
   "project_slug": "{{ cookiecutter.pypi_package_name.replace('-', '_') }}",
-  "eb_app_name": "{{ cookiecutter.project_slug }}",
-  "eb_environment": "{{ cookiecutter.github_branch.replace('-', '_') }}",
+  "eb_app_name": "{{ cookiecutter.pypi_package_name }}",
+  "eb_environment": "{{ cookiecutter.eb_app_name }}",
   "project_short_description": "Python Boilerplate contains all the boilerplate you need to create an App.",
   "__gh_slug": "{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
 }

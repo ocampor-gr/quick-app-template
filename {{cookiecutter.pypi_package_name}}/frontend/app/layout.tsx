@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "{{cookiecutter.pypi_package_name}}",
+  title: "{{cookiecutter.app_name}}",
   description: "{{cookiecutter.project_short_description}}",
 };
 
