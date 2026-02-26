@@ -1,4 +1,5 @@
 import logging
+import os
 
 from authlib.integrations.starlette_client import OAuthError
 from fastapi import APIRouter, Depends
@@ -45,7 +46,7 @@ async def callback(request: Request) -> RedirectResponse:
         value=jwt_token,
         httponly=True,
         samesite="lax",
-        secure=False,  # TODO: set to True in production with HTTPS
+        secure=os.environ.get("AUTH_URL", "").startswith("https"),
         path="/",
     )
     return response

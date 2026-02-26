@@ -86,6 +86,11 @@ The CI/CD pipeline (`.github/workflows/deploy.yml`) requires these secrets:
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
 | `AUTH_SECRET` | Auth secret key (`openssl rand -base64 32`) |
+{%- if cookiecutter.include_custom_domain == "yes" %}
+| `DOMAIN_NAME` | Custom domain name (e.g. `{{ cookiecutter.domain_name }}`) |
+| `HOSTED_ZONE_ID` | Route 53 hosted zone ID (empty to create new) |
+| `CERTIFICATE_ARN` | ACM certificate ARN (empty to create new) |
+{%- endif %}
 {%- if cookiecutter.include_database == "yes" %}
 | `DB_PASSWORD` | RDS master password |
 {%- endif %}
@@ -96,12 +101,39 @@ The CI/CD pipeline (`.github/workflows/deploy.yml`) requires these secrets:
 openssl rand -base64 32
 ```
 
+{% if cookiecutter.include_custom_domain == "yes" %}
+## Custom Domain Setup
+
+This project is configured with HTTPS for `{{ cookiecutter.domain_name }}`.
+
+### Option A: Shared Infrastructure
+
+If you already have a Route 53 hosted zone and ACM certificate (e.g., a wildcard cert for `*.{{ cookiecutter.domain_name.split('.', 1)[1] if '.' in cookiecutter.domain_name else cookiecutter.domain_name }}`):
+
+1. Set `hosted_zone_id` and `certificate_arn` in `infra/terraform.tfvars` (or as GitHub Secrets).
+2. Deploy — Terraform will create a CNAME record and configure the HTTPS listener.
+
+### Option B: Self-Contained
+
+Leave `hosted_zone_id` and `certificate_arn` empty. Terraform will create a new Route 53 zone and ACM certificate.
+
+1. Run `terraform apply` to create the infrastructure.
+2. Get the nameservers: `cd infra && terraform output nameservers`
+3. Update your domain registrar to use these nameservers.
+4. Wait for DNS propagation (typically minutes, up to 48 hours). The ACM certificate validates automatically once DNS propagates.
+{% endif %}
+
 ## Google Auth Credentials
 
 Add the production URL to authorized redirect URIs in [Google Console](https://console.cloud.google.com/apis/credentials):
 
+{% if cookiecutter.include_custom_domain == "yes" %}
 ```
-http://<your-eb-cname>/api/auth/callback/google
+https://{{ cookiecutter.domain_name }}/api/v1/auth/callback
+```
+{% else %}
+```
+http://<your-eb-cname>/api/v1/auth/callback
 ```
 
 You can find your EB CNAME with:
@@ -109,3 +141,4 @@ You can find your EB CNAME with:
 ```bash
 cd infra && terraform output eb_environment_cname
 ```
+{% endif %}

@@ -18,7 +18,7 @@ app.add_middleware(
     SessionMiddleware,
     secret_key=os.environ.get("AUTH_SECRET", "change-me-in-production"),
     same_site="lax",
-    https_only=False,  # TODO: This should be set to true in prod
+    https_only=os.environ.get("AUTH_URL", "").startswith("https"),
 )
 
 app.add_middleware(
@@ -49,7 +49,7 @@ if os.environ.get("DEV_AUTH", "").lower() == "true":
                 value=token,
                 httponly=True,
                 samesite="lax",
-                secure=False,
+                secure=os.environ.get("AUTH_URL", "").startswith("https"),
                 path="/",
             )
             return response

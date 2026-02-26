@@ -82,6 +82,14 @@ variable "app_version_label" {
   type        = string
   default     = ""
 }
+{% if cookiecutter.include_custom_domain == "yes" %}
+
+variable "domain_name" {
+  description = "Custom domain name for the application (e.g., app.example.com)"
+  type        = string
+  default     = "{{ cookiecutter.domain_name }}"
+}
+{% endif %}
 {% if cookiecutter.include_database == "yes" %}
 
 variable "db_instance_class" {

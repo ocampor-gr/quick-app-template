@@ -7,6 +7,7 @@ REMOVE_PATHS = [
 	'{% if cookiecutter.include_database != "yes" %}backend/alembic.ini{% endif %}',
 	'{% if cookiecutter.include_database != "yes" %}backend/alembic{% endif %}',
 	'{% if cookiecutter.include_database != "yes" %}.platform/hooks/predeploy/01_run_migrations.sh{% endif %}',
+	'{% if cookiecutter.include_custom_domain != "yes" %}infra/dns.tf{% endif %}',
 ]
 
 for path in REMOVE_PATHS:
