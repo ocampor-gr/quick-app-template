@@ -26,19 +26,16 @@ COPY . .
 
 RUN bun run build
 
-# Production image, copy all the files and run next
-FROM base AS runner
+# Production image — use alpine for smaller footprint
+FROM oven/bun:1-alpine AS runner
 WORKDIR /app
-
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED=1
 
 ENV NODE_ENV=production \
     PORT=3000 \
     HOSTNAME="0.0.0.0"
 
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs --create-home nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 -G nodejs nextjs
 
 COPY --from=builder /app/public ./public
 
