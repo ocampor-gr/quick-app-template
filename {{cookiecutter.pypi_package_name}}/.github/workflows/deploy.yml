@@ -13,9 +13,15 @@ jobs:
   backend-ci:
     name: Run Backend CI
     uses: ./.github/workflows/backend-ci.yml
+  infra-approval:
+    name: Infra Change Approval
+    uses: ./.github/workflows/infra-approval.yml
   deploy:
     runs-on: ubuntu-latest
-    needs: [security-scan, backend-ci]
+    needs: [security-scan, backend-ci, infra-approval]
+    {% raw %}
+    if: ${{ always() && !failure() && !cancelled() }}
+    {% endraw %}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
