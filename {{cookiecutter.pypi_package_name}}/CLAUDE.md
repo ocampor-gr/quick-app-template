@@ -6,29 +6,48 @@ Hidden folders (`.elasticbeanstalk`, `.github`, `.platform`), `docker-compose.ym
 
 ## Architecture
 
-`frontend/CLAUDE.md` for frontend-specific guidelines
-- `backend/` - FastAPI (Python 3.13+, uv) — see `backend/CLAUDE.md` for backend-specific guidelines
-- `proxy/` - Nginx: `/api/v1/*` -> backend, everything else -> frontend
+- `backend/` — FastAPI (Python 3.13+, uv). See `backend/CLAUDE.md`.
+- `frontend/` — Next.js (TypeScript, Bun). See `frontend/CLAUDE.md`.
+- `proxy/` — Nginx: `/api/v1/*` → backend (prefix stripped), everything else → frontend.
 
-**Important**: Before working on code in `frontend/` or `backend/`, always read and follow the corresponding `CLAUDE.md` in that directory.
+Read the corresponding `CLAUDE.md` before working in `frontend/` or `backend/`.
 
-## Running locally
+## Local development (preferred)
 
-Create `.env`:
-```
-AUTH_URL=http://localhost
-AUTH_SECRET=dev-secret-key
-ALLOWED_DOMAIN=example.com
-DEV_AUTH=true
-BACKEND_URL=http://backend:8000
-```
+`DEV_AUTH=true` bypasses Google OAuth with a fake user (`dev@example.com`).
 
+**Backend** (terminal 1):
 ```bash
-docker compose build && docker compose up -d
+cd backend && uv sync
+AUTH_SECRET=dev-secret-key AUTH_URL=http://localhost:3000 ALLOWED_DOMAIN=example.com DEV_AUTH=true \
+  uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Open http://localhost. `DEV_AUTH=true` bypasses Google OAuth with a fake user.
+**Frontend** (terminal 2):
+```bash
+cd frontend && bun install
+BACKEND_URL=http://localhost:8000 bun dev   # http://localhost:3000
+```
+
+Next.js rewrites `/api/v1/*` to the backend, stripping the prefix (matching nginx).
+{%- if cookiecutter.include_database == "yes" %}
+
+**Database**: run only the postgres container, everything else local:
+```bash
+docker compose up -d db   # localhost:5432
+DB_HOST=localhost DB_USER=postgres DB_PASS=pass DB_PORT=5432 DB_NAME=postgres \
+  uv run alembic upgrade head
+# start uvicorn with the same DB_* env vars
+```
+{%- endif %}
+
+## E2E tests (Docker)
+
+Full Docker for E2E or production-like validation only:
+```bash
+docker compose build && docker compose up -d   # http://localhost
+```
 
 ## Rules
 
-1. When executing bash commands, you must not use 2>&1 redirection. All commands should be run without this specific redirection
+1. Do not use `2>&1` redirection in bash commands.
