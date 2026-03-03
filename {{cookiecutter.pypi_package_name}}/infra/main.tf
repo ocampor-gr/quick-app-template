@@ -90,6 +90,31 @@ resource "aws_elastic_beanstalk_environment" "_" {
     name      = "HealthCheckPath"
     value     = "/api/v1/health"
   }
+{% endraw %}
+{% if cookiecutter.include_custom_domain == "yes" %}
+{% raw %}
+
+  # HTTPS listener on port 443
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "ListenerEnabled"
+    value     = "true"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "Protocol"
+    value     = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = local.cert_arn
+  }
+{% endraw %}
+{% endif %}
+{% raw %}
 
   # Environment variables
   setting {
@@ -167,6 +192,26 @@ resource "aws_elastic_beanstalk_environment" "_" {
   }
 }
 
+{% endraw %}
+{% if cookiecutter.include_custom_domain == "yes" %}
+{% raw %}
+resource "terraform_data" "_" {
+  triggers_replace = {
+    fqdn = local.fqdn
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      aws elasticbeanstalk update-environment \
+        --environment-name ${aws_elastic_beanstalk_environment._.name} \
+        --option-settings "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AUTH_URL,Value=https://${local.fqdn}" \
+        --region ${var.region}
+    EOT
+  }
+}
+{% endraw %}
+{% else %}
+{% raw %}
 resource "terraform_data" "_" {
   triggers_replace = {
     environment_cname = aws_elastic_beanstalk_environment._.cname
@@ -181,6 +226,9 @@ resource "terraform_data" "_" {
     EOT
   }
 }
+{% endraw %}
+{% endif %}
+{% raw %}
 
 resource "aws_elastic_beanstalk_application_version" "_" {
   count       = var.app_version_label != "" ? 1 : 0

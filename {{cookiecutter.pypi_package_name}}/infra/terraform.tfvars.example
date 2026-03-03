@@ -10,6 +10,13 @@ google_client_secret = "your-google-client-secret"
 # solution_stack_name = "64bit Amazon Linux 2023 running Docker"
 
 # app_version_label and tf_state_bucket are set by deploy.sh, do not set manually
+{% if cookiecutter.include_custom_domain == "yes" %}
+
+# domain_name     = "{{ cookiecutter.domain_name }}"
+# subdomain       = "{{ cookiecutter.subdomain }}"  # e.g., "app" for app.example.com; empty for bare domain
+# hosted_zone_id  = ""  # leave empty to create a new Route 53 zone
+# certificate_arn = ""  # leave empty to create a new ACM certificate
+{% endif %}
 {% if cookiecutter.include_database == "yes" %}
 
 # db_name = "{{ cookiecutter.project_slug }}"

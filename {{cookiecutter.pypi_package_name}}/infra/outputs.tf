@@ -15,6 +15,20 @@ output "eb_environment_cname" {
 }
 
 {% endraw %}
+{% if cookiecutter.include_custom_domain == "yes" %}
+{% raw %}
+
+output "app_url" {
+  description = "Application URL"
+  value       = "https://${local.fqdn}"
+}
+
+output "nameservers" {
+  description = "Route 53 nameservers (update your domain registrar with these; empty if using existing zone)"
+  value       = local.create_zone ? aws_route53_zone._[0].name_servers : []
+}
+{% endraw %}
+{% endif %}
 {% if cookiecutter.include_database == "yes" %}
 
 output "db_endpoint" {
