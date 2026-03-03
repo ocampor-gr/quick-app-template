@@ -92,9 +92,6 @@ The CI/CD pipeline (`.github/workflows/deploy.yml`) requires these secrets:
 | `HOSTED_ZONE_ID` | Route 53 hosted zone ID (empty to create new) |
 | `CERTIFICATE_ARN` | ACM certificate ARN (empty to create new) |
 {%- endif %}
-{%- if cookiecutter.include_database == "yes" %}
-| `DB_PASSWORD` | RDS master password |
-{%- endif %}
 
 ## Generate AUTH_SECRET
 
