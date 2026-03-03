@@ -41,6 +41,8 @@ services:
   {% if cookiecutter.include_database %}
   db:
     image: postgres:alpine
+    profiles:
+      - local
     environment:
       - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_DB=${DB_NAME}
