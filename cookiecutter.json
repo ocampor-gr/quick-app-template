@@ -5,6 +5,7 @@
   "include_database": "no",
   "include_custom_domain": "no",
   "domain_name": "example.com",
+  "subdomain": "",
   "pypi_package_name": "{{ cookiecutter.app_name.lower().replace(' ', '-').replace('_', '-') }}",
   "project_slug": "{{ cookiecutter.pypi_package_name.replace('-', '_') }}",
   "eb_app_name": "{{ cookiecutter.pypi_package_name }}",

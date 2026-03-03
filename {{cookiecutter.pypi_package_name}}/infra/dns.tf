@@ -17,6 +17,8 @@ locals {
   create_cert = var.certificate_arn == ""
   zone_id     = local.create_zone ? aws_route53_zone._[0].zone_id : var.hosted_zone_id
   cert_arn    = local.create_cert ? aws_acm_certificate_validation._[0].certificate_arn : var.certificate_arn
+  # Fully qualified domain name (e.g., "app.example.com" or just "example.com")
+  fqdn = var.subdomain != "" ? "${var.subdomain}.${var.domain_name}" : var.domain_name
 }
 
 # --- Self-contained resources (created only when IDs not provided) ---
@@ -28,7 +30,7 @@ resource "aws_route53_zone" "_" {
 
 resource "aws_acm_certificate" "_" {
   count             = local.create_cert ? 1 : 0
-  domain_name       = var.domain_name
+  domain_name       = local.fqdn
   validation_method = "DNS"
 
   lifecycle {
@@ -63,7 +65,7 @@ resource "aws_acm_certificate_validation" "_" {
 
 resource "aws_route53_record" "app" {
   zone_id = local.zone_id
-  name    = var.domain_name
+  name    = local.fqdn
   type    = "CNAME"
   ttl     = 300
   records = [aws_elastic_beanstalk_environment._.cname]

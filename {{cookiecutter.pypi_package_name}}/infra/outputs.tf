@@ -20,7 +20,7 @@ output "eb_environment_cname" {
 
 output "app_url" {
   description = "Application URL"
-  value       = "https://${var.domain_name}"
+  value       = "https://${local.fqdn}"
 }
 
 output "nameservers" {

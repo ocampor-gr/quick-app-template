@@ -197,14 +197,14 @@ resource "aws_elastic_beanstalk_environment" "_" {
 {% raw %}
 resource "terraform_data" "_" {
   triggers_replace = {
-    domain_name = var.domain_name
+    fqdn = local.fqdn
   }
 
   provisioner "local-exec" {
     command = <<-EOT
       aws elasticbeanstalk update-environment \
         --environment-name ${aws_elastic_beanstalk_environment._.name} \
-        --option-settings "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AUTH_URL,Value=https://${var.domain_name}" \
+        --option-settings "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AUTH_URL,Value=https://${local.fqdn}" \
         --region ${var.region}
     EOT
   }
