@@ -11,15 +11,15 @@ dbname = os.environ.get("DB_NAME", "")
 host = os.environ.get("DB_HOST", "")
 
 engine = create_engine(
-	f"postgresql://{user}:{password}@{host}:{port}/{dbname}",
-	pool_size=5,
-	max_overflow=10
+    f"postgresql://{user}:{password}@{host}:{port}/{dbname}",
+    pool_size=5,
+    max_overflow=10,
 )
 
 
-def get_session():
-	with Session(engine) as session:
-		yield session
+def get_session():  # type: ignore[no-untyped-def]
+    with Session(engine) as session:
+        yield session
 
 
 SessionDep = Annotated[Session, Depends(get_session)]

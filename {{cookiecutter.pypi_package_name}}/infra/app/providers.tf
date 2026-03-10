@@ -20,3 +20,11 @@ terraform {
 provider "aws" {
   region = var.region
 }
+{% if cookiecutter.include_custom_domain == "yes" %}
+
+# CloudFront requires ACM certificates in us-east-1, regardless of the app region.
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+}
+{% endif %}
