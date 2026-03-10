@@ -20,11 +20,6 @@ variable "app_subnet_ids" {
   type        = list(string)
 }
 
-variable "elb_subnet_ids" {
-  description = "Existing subnet IDs (multi-AZ) for the load balancer"
-  type        = list(string)
-}
-
 variable "security_group_id" {
   description = "Existing security group ID for EB instances"
   type        = string
@@ -33,7 +28,7 @@ variable "security_group_id" {
 variable "instance_type" {
   description = "EC2 instance type for EB environment"
   type        = string
-  default     = "t3.large"
+  default     = "t4g.small"
 }
 
 variable "eb_app_name" {
@@ -48,7 +43,7 @@ variable "eb_environment_name" {
 }
 
 variable "solution_stack_name" {
-  description = "EB solution stack"
+  description = "EB solution stack (ARM64)"
   type        = string
   default     = "64bit Amazon Linux 2023 v4.9.3 running Docker"
 }
@@ -75,6 +70,12 @@ variable "tf_state_bucket" {
   description = "Shared S3 bucket for Terraform state and app versions"
   type        = string
   default     = ""
+}
+
+variable "ssm_prefix" {
+  description = "SSM Parameter Store path prefix for secrets"
+  type        = string
+  default     = "/${var.project_name}"
 }
 
 variable "app_version_label" {

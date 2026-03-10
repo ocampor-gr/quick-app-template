@@ -27,6 +27,11 @@ output "nameservers" {
   description = "Route 53 nameservers (update your domain registrar with these; empty if using existing zone)"
   value       = local.create_zone ? aws_route53_zone._[0].name_servers : []
 }
+
+output "cloudfront_domain" {
+  description = "CloudFront distribution domain name"
+  value       = aws_cloudfront_distribution._.domain_name
+}
 {% endraw %}
 {% endif %}
 {% if cookiecutter.include_database == "yes" %}

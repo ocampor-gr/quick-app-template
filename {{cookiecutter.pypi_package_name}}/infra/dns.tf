@@ -29,6 +29,7 @@ resource "aws_route53_zone" "_" {
 }
 
 resource "aws_acm_certificate" "_" {
+  provider          = aws.us_east_1
   count             = local.create_cert ? 1 : 0
   domain_name       = local.fqdn
   validation_method = "DNS"
@@ -56,19 +57,24 @@ resource "aws_route53_record" "cert_validation" {
 }
 
 resource "aws_acm_certificate_validation" "_" {
+  provider                = aws.us_east_1
   count                   = local.create_cert ? 1 : 0
   certificate_arn         = aws_acm_certificate._[0].arn
   validation_record_fqdns = [for r in aws_route53_record.cert_validation : r.fqdn]
 }
 
-# --- Always created: CNAME record pointing domain to EB ---
+# --- Always created: alias record pointing domain to CloudFront ---
 
 resource "aws_route53_record" "app" {
   zone_id = local.zone_id
   name    = local.fqdn
-  type    = "CNAME"
-  ttl     = 300
-  records = [aws_elastic_beanstalk_environment._.cname]
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution._.domain_name
+    zone_id                = aws_cloudfront_distribution._.hosted_zone_id
+    evaluate_target_health = false
+  }
 }
 {% endraw %}
 {% endif %}

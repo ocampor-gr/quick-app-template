@@ -31,7 +31,11 @@ resource "aws_db_subnet_group" "_" {
   }
 }
 
-# nosemgrep: terraform.aws.security.aws-db-instance-no-logging.aws-db-instance-no-logging
+resource "aws_cloudwatch_log_group" "rds_postgresql" {
+  name              = "/aws/rds/instance/${var.project_name}-db/postgresql"
+  retention_in_days = 30
+}
+
 resource "aws_db_instance" "_" {
   identifier     = "${var.project_name}-db"
   engine         = "postgres"
@@ -48,7 +52,10 @@ resource "aws_db_instance" "_" {
   db_subnet_group_name   = aws_db_subnet_group._.name
   vpc_security_group_ids = [aws_security_group._.id]
 
-  deletion_protection = true
+  deletion_protection       = true
+  backup_retention_period   = 7
+  storage_encrypted         = true
+  enabled_cloudwatch_logs_exports = ["postgresql"]
 
   skip_final_snapshot       = false
   final_snapshot_identifier = "${var.project_name}-db-final-snapshot"
@@ -65,6 +72,8 @@ resource "aws_db_instance" "_" {
     prevent_destroy = true
     ignore_changes  = [password]
   }
+
+  depends_on = [aws_cloudwatch_log_group.rds_postgresql]
 }
 {% endraw %}
 {% endif %}

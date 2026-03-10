@@ -33,18 +33,6 @@ resource "aws_elastic_beanstalk_environment" "_" {
     value     = join(",", var.app_subnet_ids)
   }
 
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBSubnets"
-    value     = join(",", var.elb_subnet_ids)
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBScheme"
-    value     = "public"
-  }
-
   # Instances
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
@@ -71,68 +59,46 @@ resource "aws_elastic_beanstalk_environment" "_" {
     value     = aws_iam_role.eb_service.arn
   }
 
-  # Load balancer
+  # Single instance (no load balancer — CloudFront handles HTTPS)
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
-    value     = "LoadBalanced"
+    value     = "SingleInstance"
+  }
+
+  # Pin autoscaling to exactly 1 instance
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MinSize"
+    value     = "1"
   }
 
   setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "LoadBalancerType"
-    value     = "application"
+    namespace = "aws:autoscaling:asg"
+    name      = "MaxSize"
+    value     = "1"
   }
 
   # Health check
   setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "HealthCheckPath"
+    namespace = "aws:elasticbeanstalk:application"
+    name      = "Application Healthcheck URL"
     value     = "/api/v1/health"
   }
-{% endraw %}
-{% if cookiecutter.include_custom_domain == "yes" %}
-{% raw %}
-
-  # HTTPS listener on port 443
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "ListenerEnabled"
-    value     = "true"
-  }
-
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "Protocol"
-    value     = "HTTPS"
-  }
-
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLCertificateArns"
-    value     = local.cert_arn
-  }
-{% endraw %}
-{% endif %}
-{% raw %}
 
   # Environment variables
+  # Secrets are stored in SSM Parameter Store and loaded by the app at startup.
+  # SSM_PREFIX tells the app where to find them.
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "GOOGLE_CLIENT_ID"
-    value     = var.google_client_id
+    name      = "SSM_PREFIX"
+    value     = var.ssm_prefix
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "GOOGLE_CLIENT_SECRET"
-    value     = var.google_client_secret
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "AUTH_SECRET"
-    value     = random_bytes.auth_secret.base64
+    name      = "AWS_REGION"
+    value     = var.region
   }
 
   setting {
@@ -174,11 +140,7 @@ resource "aws_elastic_beanstalk_environment" "_" {
     value     = aws_db_instance._.username
   }
 
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "DB_PASS"
-    value     = aws_db_instance._.password
-  }
+  # DB_PASS is stored in SSM Parameter Store (loaded via SSM_PREFIX)
 {% endraw %}
 {% endif %}
 {% raw %}

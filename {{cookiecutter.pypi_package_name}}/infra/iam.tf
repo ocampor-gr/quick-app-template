@@ -26,6 +26,26 @@ resource "aws_iam_role_policy_attachment" "eb_ecr" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
+resource "aws_iam_role_policy" "ssm_read" {
+  name = "${var.project_name}-ssm-read"
+  role = aws_iam_role.eb_ec2.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath"
+        ]
+        Resource = "arn:aws:ssm:${var.region}:*:parameter${var.ssm_prefix}/*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_instance_profile" "_" {
   name = "${var.project_name}-eb-ec2-profile"
   role = aws_iam_role.eb_ec2.name
