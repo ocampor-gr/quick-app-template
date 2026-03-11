@@ -58,3 +58,11 @@ jobs:
         {% endraw %}
 {% endif %}
       run: bash ./scripts/deploy.sh
+  eb-logs:
+    name: Print EB Logs
+    needs: [deploy]
+    {% raw %}
+    if: failure()
+    {% endraw %}
+    uses: ./.github/workflows/eb-logs.yml
+    secrets: inherit
