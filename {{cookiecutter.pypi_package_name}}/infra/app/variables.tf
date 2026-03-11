@@ -75,7 +75,7 @@ variable "tf_state_bucket" {
 variable "ssm_prefix" {
   description = "SSM Parameter Store path prefix for secrets"
   type        = string
-  default     = "/${var.project_name}"
+  default     = "/{{ cookiecutter.pypi_package_name }}"
 }
 
 variable "app_version_label" {
