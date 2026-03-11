@@ -1,4 +1,5 @@
 import os
+from collections.abc import Generator
 from typing import Annotated
 
 from fastapi import Depends
@@ -17,7 +18,7 @@ engine = create_engine(
 )
 
 
-def get_session():  # type: ignore[no-untyped-def]
+def get_session() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session
 

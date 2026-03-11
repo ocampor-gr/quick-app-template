@@ -4,6 +4,7 @@ from collections.abc import Generator
 from unittest.mock import MagicMock
 
 import pytest
+from fastapi import FastAPI
 
 from app.models import Note
 {%- endif %}
@@ -22,9 +23,10 @@ def mock_session(client: TestClient) -> Generator[MagicMock, None, None]:
     from app.database import get_session
 
     mock = MagicMock()
-    client.app.dependency_overrides[get_session] = lambda: mock  # type: ignore[attr-defined]
+    assert isinstance(client.app, FastAPI)
+    client.app.dependency_overrides[get_session] = lambda: mock
     yield mock
-    client.app.dependency_overrides.clear()  # type: ignore[attr-defined]
+    client.app.dependency_overrides.clear()
 
 
 def test_ping_db_with_note(client: TestClient, mock_session: MagicMock) -> None:
