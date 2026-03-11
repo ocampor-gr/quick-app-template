@@ -18,4 +18,5 @@ variable "github_repo" {
 variable "tf_state_bucket" {
   description = "Existing S3 bucket name for Terraform state. Leave empty to create one."
   type        = string
+  default     = ""
 }
