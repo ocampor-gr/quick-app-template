@@ -4,3 +4,7 @@
 *.tfstate.backup
 terraform.tfvars
 *.tfplan
+
+.env
+.env.*
+!.env.example
