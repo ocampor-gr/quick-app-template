@@ -146,12 +146,34 @@ data "aws_iam_policy_document" "deploy" {
       "cloudformation:GetTemplate*",
       "logs:Describe*",
       "logs:List*",
+      "logs:ListTagsForResource",
       "cloudwatch:Describe*",
       "cloudwatch:List*",
       "sns:Get*",
       "sns:List*",
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
+      "kms:ListAliases",
+      "kms:ListResourceTags",
     ]
     resources = ["*"]
+  }
+
+  # SSM Parameter Store: read-only refresh of secrets the project owns.
+  # Scoped to the project prefix.
+  statement {
+    sid    = "SSMProjectParametersRead"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:GetParametersByPath",
+      "ssm:ListTagsForResource",
+    ]
+    resources = [
+      "arn:aws:ssm:*:*:parameter/${var.project_name}/*",
+    ]
   }
 {% endraw %}
 {% if cookiecutter.include_custom_domain == "yes" %}
