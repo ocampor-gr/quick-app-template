@@ -14,7 +14,7 @@ resource "aws_security_group" "_" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [var.security_group_id]
+    security_groups = var.security_group_id
   }
 
   tags = {

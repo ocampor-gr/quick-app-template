@@ -1,6 +1,7 @@
 vpc_id            = "vpc-xxxxxxxxxxxxxxxxx"
 app_subnet_ids    = ["subnet-xxxxxxxxxxxxxxxxx", "subnet-xxxxxxxxxxxxxxxxx"]
-security_group_id = "sg-xxxxxxxxxxxxxxxxx"
+elb_subnet_ids    = ["subnet-xxxxxxxxxxxxxxxxx", "subnet-xxxxxxxxxxxxxxxxx"]
+security_group_id = ["sg-xxxxxxxxxxxxxxxxx"]
 
 google_client_id     = "your-google-client-id"
 google_client_secret = "your-google-client-secret"

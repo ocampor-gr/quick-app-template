@@ -20,9 +20,15 @@ variable "app_subnet_ids" {
   type        = list(string)
 }
 
+variable "elb_subnet_ids" {
+  description = "Existing public subnet IDs for the load balancer (unused in SingleInstance mode)"
+  type        = list(string)
+  default     = []
+}
+
 variable "security_group_id" {
-  description = "Existing security group ID for EB instances"
-  type        = string
+  description = "Existing security group IDs for EB instances"
+  type        = list(string)
 }
 
 variable "instance_type" {

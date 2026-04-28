@@ -49,7 +49,7 @@ resource "aws_elastic_beanstalk_environment" "_" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = var.security_group_id
+    value     = join(",", var.security_group_id)
   }
 
   # Service role
