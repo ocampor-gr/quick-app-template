@@ -70,15 +70,17 @@ terraform destroy
 
 ### GitHub Actions Secrets
 
-The CI/CD pipeline (`.github/workflows/deploy.yml`) requires these secrets:
+The CI/CD pipeline (`.github/workflows/deploy.yml`) authenticates to AWS via
+GitHub OIDC — no static AWS credentials are stored in GitHub. Run
+`bash scripts/bootstrap-oidc.sh` once: it provisions the IAM role +
+state bucket and sets the OIDC-related secrets (`AWS_DEPLOY_ROLE_ARN`,
+`TF_STATE_BUCKET`, `TF_STATE_REGION`, `AWS_REGION`) for you. See
+`infra/README.md` for details.
+
+The remaining secrets are app-level and must be set manually:
 
 | Secret | Description |
 |--------|-------------|
-| `AWS_ACCESS_KEY_ID` | AWS access key |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret key |
-| `AWS_REGION` | AWS region (e.g. `us-east-2`) |
-| `TF_STATE_BUCKET` | S3 bucket for Terraform state |
-| `TF_STATE_REGION` | Region of the state bucket |
 | `VPC_ID` | VPC ID for the EB environment |
 | `APP_SUBNET_IDS` | JSON list of app subnet IDs (e.g. `["subnet-xxx","subnet-yyy"]`) |
 | `ELB_SUBNET_IDS` | JSON list of ELB subnet IDs (e.g. `["subnet-xxx","subnet-yyy"]`) |
