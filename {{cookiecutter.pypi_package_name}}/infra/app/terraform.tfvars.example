@@ -5,7 +5,7 @@ security_group_id = ["sg-xxxxxxxxxxxxxxxxx"]
 
 google_client_id     = "your-google-client-id"
 google_client_secret = "your-google-client-secret"
-# instance_type       = "t4g.small"
+# instance_type       = "t4g.large"
 # allowed_domain      = "graphitehq.com"
 # solution_stack_name = "64bit Amazon Linux 2023 running Docker"
 

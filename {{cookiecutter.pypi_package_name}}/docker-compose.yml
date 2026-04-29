@@ -28,6 +28,8 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - DEV_AUTH=${DEV_AUTH:-false}
+      - SSM_PREFIX=${SSM_PREFIX:-}
+      - AWS_REGION=${AWS_REGION:-}
     {% if cookiecutter.include_database %}
       - DB_PASS=${DB_PASS}
       - DB_USER=${DB_USER}

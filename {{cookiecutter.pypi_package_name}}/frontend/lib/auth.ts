@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { BACKEND_URL } from "./config";
 
 export interface User {
@@ -6,7 +7,7 @@ export interface User {
   image: string;
 }
 
-export async function getUser(cookieHeader: string): Promise<User | null> {
+export const getUser = cache(async (cookieHeader: string): Promise<User | null> => {
   try {
     const response = await fetch(`${BACKEND_URL}/auth/me`, {
       headers: { cookie: cookieHeader },
@@ -18,4 +19,4 @@ export async function getUser(cookieHeader: string): Promise<User | null> {
   } catch {
     return null;
   }
-}
+});

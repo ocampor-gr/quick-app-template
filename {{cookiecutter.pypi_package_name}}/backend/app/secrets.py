@@ -35,5 +35,6 @@ def load_ssm_parameters(prefix: str, region: str) -> None:
         return
 
     for key, value in _fetch_parameters(prefix, region).items():
-        os.environ.setdefault(key, value)
-        logger.info("Loaded secret %s from SSM", key)
+        if not os.environ.get(key):
+            os.environ[key] = value
+            logger.info("Loaded secret %s from SSM", key)

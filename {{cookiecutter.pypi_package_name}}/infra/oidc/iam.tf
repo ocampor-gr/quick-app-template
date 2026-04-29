@@ -156,19 +156,30 @@ data "aws_iam_policy_document" "deploy" {
       "kms:GetKeyRotationStatus",
       "kms:ListAliases",
       "kms:ListResourceTags",
+      "ssm:DescribeParameters",
     ]
     resources = ["*"]
   }
 
-  # SSM Parameter Store: read-only refresh of secrets the project owns.
-  # Scoped to the project prefix.
+  # SSM Parameter Store: read + write + delete for parameters under
+  # the project prefix. Write is needed because the deploy workflow
+  # re-applies Terraform every push, and any change to a secret
+  # value (rotated GH secret, new admin email) flows through here.
+  # Scope is path-restricted so cross-project parameters stay
+  # inaccessible.
   statement {
-    sid    = "SSMProjectParametersRead"
+    sid    = "SSMProjectParameters"
     effect = "Allow"
     actions = [
       "ssm:GetParameter",
       "ssm:GetParameters",
       "ssm:GetParametersByPath",
+      "ssm:PutParameter",
+      "ssm:DeleteParameter",
+      "ssm:DeleteParameters",
+      "ssm:LabelParameterVersion",
+      "ssm:AddTagsToResource",
+      "ssm:RemoveTagsFromResource",
       "ssm:ListTagsForResource",
     ]
     resources = [

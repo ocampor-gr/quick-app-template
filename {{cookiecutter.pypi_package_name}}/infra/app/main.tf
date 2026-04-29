@@ -27,10 +27,30 @@ resource "aws_elastic_beanstalk_environment" "_" {
     value     = var.vpc_id
   }
 
+  # Instances live in private app subnets (NAT egress only). The ALB
+  # below sits in public ELB subnets and proxies traffic in.
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
     value     = join(",", var.app_subnet_ids)
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = join(",", var.elb_subnet_ids)
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = "public"
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     = "false"
   }
 
   # Instances
@@ -59,11 +79,18 @@ resource "aws_elastic_beanstalk_environment" "_" {
     value     = aws_iam_role.eb_service.arn
   }
 
-  # Single instance (no load balancer — CloudFront handles HTTPS)
+  # Load-balanced via internal ALB in public subnets. Instance stays
+  # private; ALB terminates HTTP/HTTPS.
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
-    value     = "SingleInstance"
+    value     = "LoadBalanced"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = "application"
   }
 
   # Pin autoscaling to exactly 1 instance
@@ -79,11 +106,17 @@ resource "aws_elastic_beanstalk_environment" "_" {
     value     = "1"
   }
 
-  # Health check
+  # Health check (ALB target group probes this path on the proxy container)
   setting {
-    namespace = "aws:elasticbeanstalk:application"
-    name      = "Application Healthcheck URL"
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckPath"
     value     = "/api/v1/health"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "MatcherHTTPCode"
+    value     = "200"
   }
 
   # Environment variables
@@ -168,6 +201,9 @@ resource "terraform_data" "_" {
         --environment-name ${aws_elastic_beanstalk_environment._.name} \
         --option-settings "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AUTH_URL,Value=https://${local.fqdn}" \
         --region ${var.region}
+      aws elasticbeanstalk wait environment-updated \
+        --environment-names ${aws_elastic_beanstalk_environment._.name} \
+        --region ${var.region}
     EOT
   }
 }
@@ -184,6 +220,9 @@ resource "terraform_data" "_" {
       aws elasticbeanstalk update-environment \
         --environment-name ${aws_elastic_beanstalk_environment._.name} \
         --option-settings "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AUTH_URL,Value=http://${aws_elastic_beanstalk_environment._.cname}" \
+        --region ${var.region}
+      aws elasticbeanstalk wait environment-updated \
+        --environment-names ${aws_elastic_beanstalk_environment._.name} \
         --region ${var.region}
     EOT
   }
@@ -219,6 +258,9 @@ resource "terraform_data" "deploy" {
     EOT
   }
 
-  depends_on = [aws_elastic_beanstalk_application_version._]
+  depends_on = [
+    aws_elastic_beanstalk_application_version._,
+    terraform_data._,
+  ]
 }
 {% endraw %}
